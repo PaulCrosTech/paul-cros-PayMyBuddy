@@ -47,7 +47,7 @@ The default password for all users is : "password".
 
 ### Database configuration
 
-Copy and rename the "/src/main/ressources/script/.env.template" file into the projet directory as "/src/main/.env", 
+Copy and rename the "/src/main/ressources/script/.env.template" file into the projet directory as "/.env", 
 then update the file with your MySQL configuration.
 
 ### Testing
