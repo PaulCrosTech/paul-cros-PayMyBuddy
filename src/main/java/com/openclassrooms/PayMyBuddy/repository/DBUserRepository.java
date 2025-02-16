@@ -17,4 +17,13 @@ public interface DBUserRepository extends JpaRepository<DBUser, Integer> {
      * @return the user
      */
     DBUser findByEmail(String email);
+
+
+    /**
+     * Find User by username
+     *
+     * @param userName the username
+     * @return the user
+     */
+    DBUser findByUserName(String userName);
 }
