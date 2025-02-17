@@ -18,15 +18,16 @@ import java.util.ArrayList;
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
 
-    private final DBUserRepository userRepository;
+    private final DBUserRepository dbUserRepository;
+
 
     /**
      * Constructor
      *
-     * @param userRepository userRepository
+     * @param dbUserRepository dbUserRepository
      */
-    public CustomUserDetailsService(DBUserRepository userRepository) {
-        this.userRepository = userRepository;
+    public CustomUserDetailsService(DBUserRepository dbUserRepository) {
+        this.dbUserRepository = dbUserRepository;
     }
 
     /**
@@ -38,8 +39,8 @@ public class CustomUserDetailsService implements UserDetailsService {
      */
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        log.info("====> Loading user by email {} <====", email);
-        DBUser dbUser = userRepository.findByEmail(email);
+        log.info("====> Authenticate user with email {} <====", email);
+        DBUser dbUser = dbUserRepository.findByEmail(email);
         if (dbUser == null) {
             log.debug("====> User with mail {} is not found <====", email);
             throw new UsernameNotFoundException("User with mail " + email + " is not found");

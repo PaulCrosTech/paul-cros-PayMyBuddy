@@ -20,7 +20,10 @@ public class LoginController {
     @GetMapping(path = "/login")
     public String login(Model model) {
         log.info("====> GET /login page <====");
+
         model.addAttribute("highlightLogin", true);
+
         return "login";
     }
+
 }

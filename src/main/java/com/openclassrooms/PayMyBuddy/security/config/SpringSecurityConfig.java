@@ -48,7 +48,7 @@ public class SpringSecurityConfig {
                 .formLogin(
                         form -> form
                                 .loginPage("/login")
-                                .defaultSuccessUrl("/home", true)
+                                .defaultSuccessUrl("/transfer", true)
                                 .permitAll()
                 ).build();
 
