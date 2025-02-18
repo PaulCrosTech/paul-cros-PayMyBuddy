@@ -2,6 +2,7 @@ package com.openclassrooms.PayMyBuddy.service.impl;
 
 import com.openclassrooms.PayMyBuddy.exceptions.UserWithSameEmailExistsException;
 import com.openclassrooms.PayMyBuddy.exceptions.UserWithSameUserNameExistsException;
+import com.openclassrooms.PayMyBuddy.mapper.DBUserMapper;
 import com.openclassrooms.PayMyBuddy.model.DBUser;
 import com.openclassrooms.PayMyBuddy.model.dto.DBUserRegisterDto;
 import com.openclassrooms.PayMyBuddy.repository.DBUserRepository;
@@ -19,14 +20,16 @@ public class DBUserService implements IDBUserService {
 
 
     private final DBUserRepository dbUserRepository;
+    private final DBUserMapper dbUserMapper;
 
     /**
      * Constructor
      *
      * @param dbUserRepository the db user repository
      */
-    public DBUserService(DBUserRepository dbUserRepository) {
+    public DBUserService(DBUserRepository dbUserRepository, DBUserMapper dbUserMapper) {
         this.dbUserRepository = dbUserRepository;
+        this.dbUserMapper = dbUserMapper;
     }
 
     /**
@@ -70,9 +73,7 @@ public class DBUserService implements IDBUserService {
             throw new UserWithSameUserNameExistsException(userRegisterDto.getUserName());
         }
 
-        DBUser user = new DBUser();
-        user.setEmail(userRegisterDto.getEmail());
-        user.setUserName(userRegisterDto.getUserName());
+        DBUser user = dbUserMapper.toDBUser(userRegisterDto);
         BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
         user.setPassword(bCryptPasswordEncoder.encode(userRegisterDto.getPassword()));
 
