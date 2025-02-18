@@ -5,7 +5,66 @@
 </head>
 <body>
 <div class="container" layout:fragment="content">
-    <h1>Register page</h1>
+
+
+    <div class="row">
+        <div class="col-6 mx-auto">
+            <form method="post" th:action="@{/register}" th:object="${DBUserRegisterDto}">
+
+                <div class="mb-3 mt-3">
+                    <label for="userName" class="form-label">Username</label>
+                    <div class="input-group">
+                        <input type="text" id="userName" th:field="*{userName}" class="form-control"
+                               th:classappend="${#fields.hasErrors('userName')} ? 'is-invalid' : (${#fields.hasAnyErrors()} ? 'is-valid' : '')"
+                               aria-describedby="usernameFeedback">
+                        <div id="usernameFeedback"
+                             th:classappend="${#fields.hasErrors('userName')} ? 'invalid-feedback'"
+                             th:errors="*{userName}"></div>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email</label>
+                    <div class="input-group">
+                        <input type="email" id="email" th:field="*{email}" class="form-control"
+                               th:classappend="${#fields.hasErrors('email')} ? 'is-invalid' : (${#fields.hasAnyErrors()} ? 'is-valid' : '')"
+                               aria-describedby="emailFeedback">
+                        <div id="emailFeedback"
+                             th:classappend="${#fields.hasErrors('email')} ? 'invalid-feedback'"
+                             th:errors="*{email}"></div>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="password" class="form-label">Password</label>
+                    <div class="input-group">
+                        <input type="password" id="password" th:field="*{password}" class="form-control"
+                               th:classappend="${#fields.hasErrors('password') or #fields.hasErrors('confirmPassword')} ? 'is-invalid' : ''"
+                               aria-describedby="passwordFeedback">
+                        <div id="passwordFeedback"
+                             th:classappend="${#fields.hasErrors('password')} ? 'invalid-feedback'"
+                             th:errors="*{password}"></div>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="confirmPassword" class="form-label">Confirm your password</label>
+                    <div class="input-group">
+                        <input type="password" id="confirmPassword" th:field="*{confirmPassword}" class="form-control"
+                               th:classappend="${#fields.hasErrors('confirmPassword')} ? 'is-invalid' : ''"
+                               aria-describedby="confirmPasswordFeedback">
+                        <div id="confirmPasswordFeedback"
+                             th:classappend="${#fields.hasErrors('confirmPassword')} ? 'invalid-feedback'"
+                             th:errors="*{confirmPassword}"></div>
+                    </div>
+                </div>
+
+                <div class="mb-3 text-center">
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
 </body>
 </html>

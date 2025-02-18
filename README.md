@@ -33,13 +33,12 @@ https://maven.apache.org/install.html
 
 https://dev.mysql.com/downloads/
 
-
 ### Database creation
 
 Create database schema in MySQL using the file "/src/main/ressources/script/db_schema.sql".
 
 For testing purposes you can import datas with file "/src/main/ressources/script/db_datas_for_test.sql".
-The default password for all users is : "password".
+The default password for all users is : "Password@1".
 
 ### Database MPD
 
@@ -47,7 +46,7 @@ The default password for all users is : "password".
 
 ### Database configuration
 
-Copy and rename the "/src/main/ressources/script/.env.template" file into the projet directory as "/.env", 
+Copy and rename the "/src/main/ressources/script/.env.template" file into the projet directory as "/.env",
 then update the file with your MySQL configuration.
 
 ### Testing
