@@ -31,7 +31,7 @@ public class LoginControllerIT extends AbstractContainerDB {
 
     /**
      * Test of login method
-     * - Given Existing username and password
+     * - Given Existing email and password
      * - When POST /login
      * - Then user is authenticated and redirected to private page
      *
@@ -41,7 +41,7 @@ public class LoginControllerIT extends AbstractContainerDB {
     public void givenExistingUser_whenLogin_thenAuthenticatedAndRedirectedToPrivatePage() throws Exception {
 
         mockMvc.perform(post("/login")
-                        .param("username", "alice@mail.fr")
+                        .param("email", "alice@mail.fr")
                         .param("password", "Password@1")
                         .with(csrf().asHeader()))
                 .andExpect(status().is3xxRedirection())
@@ -50,7 +50,7 @@ public class LoginControllerIT extends AbstractContainerDB {
 
     /**
      * Test of login method
-     * - Given Non-existing username / password
+     * - Given Non-existing email / password
      * - When POST /login
      * - Then user is not authenticated and redirected to login page with error
      *
@@ -60,7 +60,7 @@ public class LoginControllerIT extends AbstractContainerDB {
     public void givenNonExistingUser_whenLogin_thenUserIsNotAuthenticated() throws Exception {
 
         mockMvc.perform(post("/login")
-                        .param("username", "bad@mail.fr")
+                        .param("email", "bad@mail.fr")
                         .param("password", "badPassword")
                         .with(csrf().asHeader()))
                 .andExpect(status().is3xxRedirection())
