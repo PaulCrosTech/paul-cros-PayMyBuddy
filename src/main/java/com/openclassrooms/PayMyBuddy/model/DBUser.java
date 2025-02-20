@@ -1,6 +1,11 @@
 package com.openclassrooms.PayMyBuddy.model;
 
+import com.openclassrooms.PayMyBuddy.validators.annotations.ValidPassword;
+import com.openclassrooms.PayMyBuddy.validators.annotations.ValidPasswordMatches;
+import com.openclassrooms.PayMyBuddy.validators.annotations.ValidUsername;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
 
 import java.util.ArrayList;
@@ -21,7 +26,6 @@ public class DBUser {
 
     @Column(name = "username")
     private String userName;
-
     private String email;
     private String password;
     private double solde;

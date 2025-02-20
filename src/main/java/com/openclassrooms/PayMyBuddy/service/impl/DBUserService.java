@@ -17,8 +17,8 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @Service
 public class DBUserService implements IDBUserService {
-
-
+    
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final DBUserRepository dbUserRepository;
     private final DBUserMapper dbUserMapper;
 
@@ -27,9 +27,12 @@ public class DBUserService implements IDBUserService {
      *
      * @param dbUserRepository the db user repository
      */
-    public DBUserService(DBUserRepository dbUserRepository, DBUserMapper dbUserMapper) {
+    public DBUserService(DBUserRepository dbUserRepository,
+                         DBUserMapper dbUserMapper,
+                         BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.dbUserRepository = dbUserRepository;
         this.dbUserMapper = dbUserMapper;
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
     /**
@@ -74,7 +77,6 @@ public class DBUserService implements IDBUserService {
         }
 
         DBUser user = dbUserMapper.toDBUser(userRegisterDto);
-        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
         user.setPassword(bCryptPasswordEncoder.encode(userRegisterDto.getPassword()));
 
         return dbUserRepository.save(user);
