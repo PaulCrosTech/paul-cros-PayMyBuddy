@@ -22,7 +22,8 @@ public @interface ValidPassword {
      *
      * @return String
      */
-    String message() default "Password must be between 8 and 20 characters. At least one digit, one lowercase letter, one uppercase letter, one special character (@#$%^&+=) and no whitespace";
+    String message() default "Le mot de passe doit comporter entre 8 et 20 caractères. Il doit contenir au moins un chiffre, une lettre minuscule, une lettre majuscule, un caractère spécial (@#$%^&+=) et ne doit pas contenir d''espaces.";
+
 
     /**
      * pattern

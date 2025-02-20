@@ -19,7 +19,7 @@ public @interface ValidPasswordMatches {
      *
      * @return String
      */
-    String message() default "Passwords don't match.";
+    String message() default "Les mots de passe ne correspondent pas.";
 
     /**
      * groups

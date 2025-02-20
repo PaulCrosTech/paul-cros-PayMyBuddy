@@ -22,8 +22,11 @@ public class DBUser {
 
     @Column(name = "username")
     private String userName;
+
     private String email;
+
     private String password;
+
     private double solde;
 
     @ManyToMany(

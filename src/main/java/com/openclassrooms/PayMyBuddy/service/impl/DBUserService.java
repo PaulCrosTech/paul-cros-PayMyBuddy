@@ -8,6 +8,7 @@ import com.openclassrooms.PayMyBuddy.model.dto.DBUserRegisterDto;
 import com.openclassrooms.PayMyBuddy.repository.DBUserRepository;
 import com.openclassrooms.PayMyBuddy.service.IDBUserService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -17,7 +18,7 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @Service
 public class DBUserService implements IDBUserService {
-    
+
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final DBUserRepository dbUserRepository;
     private final DBUserMapper dbUserMapper;

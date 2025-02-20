@@ -15,8 +15,8 @@ public class DBUserRegisterDto {
     @ValidUsername
     private String userName;
 
-    @NotEmpty(message = "Email is mandatory")
-    @Email(message = "Email is not valid")
+    @NotEmpty(message = "L''email est obligatoire.")
+    @Email(message = "L''email n''est pas valide.")
     private String email;
 
     @ValidPassword

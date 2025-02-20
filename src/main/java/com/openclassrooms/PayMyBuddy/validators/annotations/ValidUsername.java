@@ -22,7 +22,7 @@ public @interface ValidUsername {
      *
      * @return String
      */
-    String message() default "Username must contain only letters and numbers, between 3 and 45 characters";
+    String message() default "Le username doit comporter entre 3 et 45 caractères (lettres et des chiffres uniquement)";
 
     /**
      * pattern
