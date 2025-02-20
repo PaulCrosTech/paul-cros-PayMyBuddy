@@ -28,16 +28,32 @@
             <ul class="navbar-nav mb-2 mb-lg-0">
                 <li class="nav-item">
                     <a class="nav-link"
-                       th:href="@{/login}"
-                       th:classappend="${highlightLogin} ? 'fw-bold text-primary' : ''">
-                        Se connecter
+                       th:href="@{/transfer}"
+                       th:classappend="${highlightTransfer} ? 'fw-bold text-primary' : ''">
+                        Transférer
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link"
-                       th:href="@{/register}"
-                       th:classappend="${highlightRegister} ? 'fw-bold text-primary' : ''">
-                        S'inscrire
+                       th:href="@{/profil}"
+                       th:classappend="${highlightProfil} ? 'fw-bold text-primary' : ''">
+                        Profil
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link"
+                       th:href="@{/friends}"
+                       th:classappend="${highlightFriends} ? 'fw-bold text-primary' : ''">
+                        Ajouter relation
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <form id="form-logout" th:action="@{/logout}" method="post" style="display: none;">
+
+                    </form>
+                    <a href="#" class="nav-link"
+                       onclick="document.getElementById('form-logout').submit(); return false;">
+                        Se déconnecter
                     </a>
                 </li>
             </ul>
