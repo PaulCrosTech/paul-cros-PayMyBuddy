@@ -7,11 +7,15 @@
 <div class="container" layout:fragment="content">
 
 
-    <div class="row">
-        <div class="col-6 mx-auto">
+    <div class="row pt-5">
+        <div class="col-6 mx-auto pt-5 border">
             <form method="post" th:action="@{/register}" th:object="${DBUserRegisterDto}">
 
-                <div class="mb-3 mt-3">
+                <div class="mb-3 text-center">
+                    <h1 class="btn btn-warning text-white">Pay My Buddy</h1>
+                </div>
+
+                <div class="mb-3">
                     <div class="input-group">
                         <input type="text" id="userName" th:field="*{userName}" class="form-control"
                                th:classappend="${#fields.hasErrors('userName')} ? 'is-invalid' : (${#fields.hasAnyErrors()} ? 'is-valid' : '')"
