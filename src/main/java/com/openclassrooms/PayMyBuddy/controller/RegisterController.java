@@ -64,20 +64,6 @@ public class RegisterController {
         // Check form errors
         if (bindingResult.hasErrors()) {
             log.debug("====> Error in registering user {} <====", userRegisterDto.getUserName());
-
-            bindingResult.getAllErrors().stream()
-                    .filter(error -> Objects.equals(error.getCode(), "ValidPasswordMatches"))
-                    .findFirst()
-                    .ifPresent(error -> bindingResult.addError(new FieldError(
-                            "userRegisterDto",
-                            "confirmPassword",
-                            userRegisterDto.getConfirmPassword(),
-                            false,
-                            new String[]{"error.userRegisterDto"},
-                            null,
-                            error.getDefaultMessage()
-                    )));
-
             return "register";
         }
 

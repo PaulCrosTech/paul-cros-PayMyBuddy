@@ -36,22 +36,11 @@
                 <div class="mb-3">
                     <div class="input-group">
                         <input type="password" id="password" th:field="*{password}" class="form-control"
-                               th:classappend="${#fields.hasErrors('password') or #fields.hasErrors('confirmPassword')} ? 'is-invalid' : ''"
+                               th:classappend="${#fields.hasErrors('password')} ? 'is-invalid' : ''"
                                aria-describedby="passwordFeedback" placeholder="Mot de passe">
                         <div id="passwordFeedback"
                              th:classappend="${#fields.hasErrors('password')} ? 'invalid-feedback'"
                              th:errors="*{password}"></div>
-                    </div>
-                </div>
-
-                <div class="mb-3">
-                    <div class="input-group">
-                        <input type="password" id="confirmPassword" th:field="*{confirmPassword}" class="form-control"
-                               th:classappend="${#fields.hasErrors('confirmPassword')} ? 'is-invalid' : ''"
-                               aria-describedby="confirmPasswordFeedback" placeholder="Confirmer le mot de passe">
-                        <div id="confirmPasswordFeedback"
-                             th:classappend="${#fields.hasErrors('confirmPassword')} ? 'invalid-feedback'"
-                             th:errors="*{confirmPassword}"></div>
                     </div>
                 </div>
 

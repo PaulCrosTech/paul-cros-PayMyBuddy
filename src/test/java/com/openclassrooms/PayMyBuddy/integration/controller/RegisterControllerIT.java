@@ -54,7 +54,6 @@ public class RegisterControllerIT extends AbstractContainerDB {
                         .param("userName", "newUserName")
                         .param("email", "newEmail@mail.fr")
                         .param("password", "Password@1")
-                        .param("confirmPassword", "Password@1")
                         .with(csrf().asHeader()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/login?registered"));
@@ -79,7 +78,6 @@ public class RegisterControllerIT extends AbstractContainerDB {
                         .param("userName", "alice")
                         .param("email", "newAlice@mail.fr")
                         .param("password", "Password@1")
-                        .param("confirmPassword", "Password@1")
                         .with(csrf().asHeader()))
                 .andExpect(status().isOk())
                 .andExpect(view().name("register"))
@@ -101,7 +99,6 @@ public class RegisterControllerIT extends AbstractContainerDB {
                         .param("userName", "newAlice")
                         .param("email", "alice@mail.fr")
                         .param("password", "Password@1")
-                        .param("confirmPassword", "Password@1")
                         .with(csrf().asHeader()))
                 .andExpect(status().isOk())
                 .andExpect(view().name("register"))
@@ -110,24 +107,23 @@ public class RegisterControllerIT extends AbstractContainerDB {
 
     /**
      * Test of register method
-     * - Given : non-identical password
+     * - Given : Invalid password format
      * - When POST /register
      * - Then user is not registered and redirected to register page
      *
      * @throws Exception exception
      */
     @Test
-    public void givenNonIdenticalPassword_whenRegister_thenUserIsNotRegisteredAndRedirectedToRegister() throws Exception {
+    public void givenInvalidPasswordFormat_whenRegister_thenUserIsNotRegisteredAndRedirectedToRegister() throws Exception {
 
         mockMvc.perform(post("/register")
                         .param("userName", "newUserName2")
                         .param("email", "newEmail2@mail.fr")
-                        .param("password", "Password@1")
-                        .param("confirmPassword", "badConfirmation@1")
+                        .param("password", "badPasswordFormat")
                         .with(csrf().asHeader()))
                 .andExpect(status().isOk())
                 .andExpect(view().name("register"))
-                .andExpect(model().attributeHasFieldErrorCode("DBUserRegisterDto", "confirmPassword", "error.userRegisterDto"));
+                .andExpect(model().attributeHasFieldErrorCode("DBUserRegisterDto", "password", "ValidPassword"));
     }
 
 
