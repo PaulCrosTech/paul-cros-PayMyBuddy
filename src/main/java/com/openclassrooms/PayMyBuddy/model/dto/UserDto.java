@@ -1,23 +1,21 @@
 package com.openclassrooms.PayMyBuddy.model.dto;
 
-
+import com.openclassrooms.PayMyBuddy.validators.annotations.ValidEmail;
 import com.openclassrooms.PayMyBuddy.validators.annotations.ValidPassword;
 import com.openclassrooms.PayMyBuddy.validators.annotations.ValidUsername;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
 
 @Data
-public class DBUserRegisterDto {
+public class UserDto {
+
+    private int userId;
 
     @ValidUsername
     private String userName;
 
-    @NotEmpty(message = "L''email est obligatoire.")
-    @Email(message = "L''email n''est pas valide.")
+    @ValidEmail
     private String email;
 
     @ValidPassword
     private String password;
-
 }

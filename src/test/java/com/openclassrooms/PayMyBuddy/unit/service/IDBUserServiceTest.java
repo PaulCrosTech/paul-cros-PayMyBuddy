@@ -2,10 +2,13 @@ package com.openclassrooms.PayMyBuddy.unit.service;
 
 import com.openclassrooms.PayMyBuddy.exceptions.UserWithSameEmailExistsException;
 import com.openclassrooms.PayMyBuddy.exceptions.UserWithSameUserNameExistsException;
-import com.openclassrooms.PayMyBuddy.mapper.DBUserMapper;
+import com.openclassrooms.PayMyBuddy.mapper.UserMapper;
+import com.openclassrooms.PayMyBuddy.mapper.UserProfilMapper;
+import com.openclassrooms.PayMyBuddy.mapper.UserRegisterMapper;
 import com.openclassrooms.PayMyBuddy.model.DBUser;
-import com.openclassrooms.PayMyBuddy.model.dto.DBUserRegisterDto;
+import com.openclassrooms.PayMyBuddy.model.dto.UserRegisterDto;
 import com.openclassrooms.PayMyBuddy.repository.DBUserRepository;
+import com.openclassrooms.PayMyBuddy.security.service.SecurityService;
 import com.openclassrooms.PayMyBuddy.service.IDBUserService;
 import com.openclassrooms.PayMyBuddy.service.impl.DBUserService;
 import org.junit.jupiter.api.BeforeEach;
@@ -25,15 +28,21 @@ public class IDBUserServiceTest {
     @Mock
     private DBUserRepository dbUserRepository;
     @Mock
-    private DBUserMapper dbUserMapper;
-    @Mock
     private BCryptPasswordEncoder bCryptPasswordEncoder;
+    @Mock
+    private SecurityService securityService;
+    @Mock
+    private UserMapper userMapper;
+
 
     private IDBUserService userService;
 
     @BeforeEach
     public void setUpPerTest() {
-        userService = new DBUserService(dbUserRepository, dbUserMapper, bCryptPasswordEncoder);
+        userService = new DBUserService(dbUserRepository,
+                bCryptPasswordEncoder,
+                securityService,
+                userMapper);
     }
 
     /**
@@ -82,7 +91,7 @@ public class IDBUserServiceTest {
 
     /**
      * Testing method addUser
-     * - Given valid DBUserRegisterDto
+     * - Given valid UserRegisterDto
      * - When addUser
      * - Then return created user
      */
@@ -90,11 +99,11 @@ public class IDBUserServiceTest {
     public void givenValidDBUserRegisterDto_whenAddUser_thenReturnCreatedUser() {
 
         // Given
-        DBUserRegisterDto userRegisterDto = new DBUserRegisterDto();
+        UserRegisterDto userRegisterDto = new UserRegisterDto();
 
         when(dbUserRepository.findByEmail(userRegisterDto.getEmail())).thenReturn(null);
         when(dbUserRepository.findByUserName(userRegisterDto.getUserName())).thenReturn(null);
-        when(dbUserMapper.toDBUser(userRegisterDto)).thenReturn(new DBUser());
+        when(userRegisterMapper.toDBUser(userRegisterDto)).thenReturn(new DBUser());
         when(dbUserRepository.save(new DBUser())).thenReturn(new DBUser());
 
 
@@ -104,7 +113,7 @@ public class IDBUserServiceTest {
         // Then
         verify(dbUserRepository, times(1)).findByEmail(userRegisterDto.getEmail());
         verify(dbUserRepository, times(1)).findByUserName(userRegisterDto.getUserName());
-        verify(dbUserMapper, times(1)).toDBUser(userRegisterDto);
+        verify(userRegisterMapper, times(1)).toDBUser(userRegisterDto);
         verify(bCryptPasswordEncoder, times(1)).encode(userRegisterDto.getPassword());
         verify(dbUserRepository, times(1)).save(new DBUser());
         assertNotNull(actualUser);
@@ -121,7 +130,7 @@ public class IDBUserServiceTest {
     public void givenExistingEmail_whenAddUser_thenThrowUserWithSameEmailExistsException() {
 
         // Given
-        DBUserRegisterDto userRegisterDto = new DBUserRegisterDto();
+        UserRegisterDto userRegisterDto = new UserRegisterDto();
         userRegisterDto.setEmail("mail@mail.fr");
 
         when(dbUserRepository.findByEmail(userRegisterDto.getEmail())).thenReturn(new DBUser());
@@ -143,7 +152,7 @@ public class IDBUserServiceTest {
     @Test
     public void givenExistingUsername_whenAddUser_thenThrowUserWithSameUserNameExistsException() {
         // Given
-        DBUserRegisterDto userRegisterDto = new DBUserRegisterDto();
+        UserRegisterDto userRegisterDto = new UserRegisterDto();
         userRegisterDto.setUserName("userName");
 
         when(dbUserRepository.findByUserName(userRegisterDto.getUserName())).thenReturn(new DBUser());

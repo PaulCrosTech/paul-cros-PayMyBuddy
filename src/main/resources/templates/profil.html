@@ -5,7 +5,61 @@
 </head>
 <body>
 <div class="container" layout:fragment="content">
-    <h1>Profil</h1>
+
+    <div class="row mt-3" th:if="${param.success}">
+        <div class="col-6 mx-auto">
+            <div class="alert alert-success text-center" role="alert">
+                Modifications effectuées avec succès.
+            </div>
+        </div>
+    </div>
+
+    <div class="row pt-5">
+        <div class="col-6 mx-auto pt-5 border">
+            <form method="post" th:action="@{/profil}" th:object="${userDto}">
+
+                <div class="mb-3 row">
+                    <label for="userName" class="col-sm-4 col-form-label">Username</label>
+                    <div class="col-sm-8">
+                        <input type="text" id="userName" th:field="*{userName}" class="form-control"
+                               th:classappend="${#fields.hasErrors('userName')} ? 'is-invalid' : (${#fields.hasAnyErrors()} ? 'is-valid' : '')"
+                               aria-describedby="usernameFeedback" placeholder="Username">
+                        <div id="usernameFeedback"
+                             th:classappend="${#fields.hasErrors('userName')} ? 'invalid-feedback'"
+                             th:errors="*{userName}"></div>
+                    </div>
+                </div>
+
+                <div class="mb-3 row">
+                    <label for="email" class="col-sm-4 col-form-label">Mail</label>
+                    <div class="col-sm-8">
+                        <input type="email" id="email" th:field="*{email}" class="form-control"
+                               th:classappend="${#fields.hasErrors('email')} ? 'is-invalid' : (${#fields.hasAnyErrors()} ? 'is-valid' : '')"
+                               aria-describedby="emailFeedback" placeholder="Mail">
+                        <div id="emailFeedback"
+                             th:classappend="${#fields.hasErrors('email')} ? 'invalid-feedback'"
+                             th:errors="*{email}"></div>
+                    </div>
+                </div>
+
+                <div class="mb-3 row">
+                    <label for="password" class="col-sm-4 col-form-label">Mot de passe</label>
+                    <div class="col-sm-8">
+                        <input type="password" id="password" th:field="*{password}" class="form-control"
+                               th:classappend="${#fields.hasErrors('password')} ? 'is-invalid' : ''"
+                               aria-describedby="passwordFeedback" placeholder="">
+                        <div id="passwordFeedback"
+                             th:classappend="${#fields.hasErrors('password')} ? 'invalid-feedback'"
+                             th:errors="*{password}"></div>
+                    </div>
+                </div>
+
+                <div class="mb-3 text-center">
+                    <button type="submit" class="btn btn-warning">Modifier</button>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
 </body>
 </html>

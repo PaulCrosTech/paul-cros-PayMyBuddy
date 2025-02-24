@@ -20,7 +20,6 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     private final DBUserRepository dbUserRepository;
 
-
     /**
      * Constructor
      *
@@ -45,10 +44,12 @@ public class CustomUserDetailsService implements UserDetailsService {
             log.debug("====> User with mail {} is not found <====", email);
             throw new UsernameNotFoundException("User with mail " + email + " is not found");
         }
-        return new User(dbUser.getEmail(),
+        return new User(
+                dbUser.getEmail(),
                 dbUser.getPassword(),
                 new ArrayList<>()
         );
     }
+
 
 }

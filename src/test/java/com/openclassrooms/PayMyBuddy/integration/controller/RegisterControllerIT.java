@@ -81,7 +81,7 @@ public class RegisterControllerIT extends AbstractContainerDB {
                         .with(csrf().asHeader()))
                 .andExpect(status().isOk())
                 .andExpect(view().name("register"))
-                .andExpect(model().attributeHasFieldErrorCode("DBUserRegisterDto", "userName", "error.userRegisterDto"));
+                .andExpect(model().attributeHasFieldErrorCode("UserRegisterDto", "userName", "error.userRegisterDto"));
     }
 
     /**
@@ -102,7 +102,7 @@ public class RegisterControllerIT extends AbstractContainerDB {
                         .with(csrf().asHeader()))
                 .andExpect(status().isOk())
                 .andExpect(view().name("register"))
-                .andExpect(model().attributeHasFieldErrorCode("DBUserRegisterDto", "email", "error.userRegisterDto"));
+                .andExpect(model().attributeHasFieldErrorCode("UserRegisterDto", "email", "error.userRegisterDto"));
     }
 
     /**
@@ -123,7 +123,7 @@ public class RegisterControllerIT extends AbstractContainerDB {
                         .with(csrf().asHeader()))
                 .andExpect(status().isOk())
                 .andExpect(view().name("register"))
-                .andExpect(model().attributeHasFieldErrorCode("DBUserRegisterDto", "password", "ValidPassword"));
+                .andExpect(model().attributeHasFieldErrorCode("UserRegisterDto", "password", "ValidPassword"));
     }
 
 

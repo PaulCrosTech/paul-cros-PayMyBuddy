@@ -1,6 +1,5 @@
 package com.openclassrooms.PayMyBuddy.model;
 
-
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -8,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * User class
+ * User class for the database.
  */
 @Entity
 @Data

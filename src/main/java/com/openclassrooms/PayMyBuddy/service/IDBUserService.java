@@ -2,13 +2,13 @@ package com.openclassrooms.PayMyBuddy.service;
 
 import com.openclassrooms.PayMyBuddy.exceptions.UserWithSameEmailExistsException;
 import com.openclassrooms.PayMyBuddy.exceptions.UserWithSameUserNameExistsException;
-import com.openclassrooms.PayMyBuddy.model.DBUser;
-import com.openclassrooms.PayMyBuddy.model.dto.DBUserRegisterDto;
+import com.openclassrooms.PayMyBuddy.model.dto.UserDto;
 
 /**
  * The interface DBUser service.
  */
 public interface IDBUserService {
+
 
     /**
      * Find DBUser by email
@@ -16,7 +16,7 @@ public interface IDBUserService {
      * @param email the email
      * @return the user
      */
-    DBUser findByEmail(String email);
+    UserDto findByEmail(String email);
 
     /**
      * Find DBUser by username
@@ -24,16 +24,25 @@ public interface IDBUserService {
      * @param userName the username
      * @return the user
      */
-    DBUser findByUserName(String userName);
+    UserDto findByUserName(String userName);
 
 
     /**
-     * Add a user to the database
+     * Add a user in the database
      *
-     * @param user the user to add
-     * @return the user added
-     * @throws UserWithSameEmailExistsException    if a user with the same email already exists
-     * @throws UserWithSameUserNameExistsException if a user with the same username already exists
+     * @param userDto the user to add
+     * @throws UserWithSameEmailExistsException    the user with the same email exists exception
+     * @throws UserWithSameUserNameExistsException the user with the same username exists exception
      */
-    DBUser addUser(DBUserRegisterDto user) throws UserWithSameEmailExistsException, UserWithSameUserNameExistsException;
+    void addUser(UserDto userDto) throws UserWithSameEmailExistsException, UserWithSameUserNameExistsException;
+
+
+    /**
+     * Update user.
+     *
+     * @param userDto the user to update
+     * @throws UserWithSameEmailExistsException    the user with the same email exists exception
+     * @throws UserWithSameUserNameExistsException the user with the same username exists exception
+     */
+    void updateUser(UserDto userDto) throws UserWithSameEmailExistsException, UserWithSameUserNameExistsException;
 }
