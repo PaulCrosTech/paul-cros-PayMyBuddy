@@ -48,4 +48,5 @@ public class SecurityService {
         log.info("====> Get the current authentication <====");
         return SecurityContextHolder.getContext().getAuthentication();
     }
+
 }

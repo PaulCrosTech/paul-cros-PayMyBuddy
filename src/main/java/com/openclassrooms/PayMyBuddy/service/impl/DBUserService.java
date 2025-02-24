@@ -1,5 +1,6 @@
 package com.openclassrooms.PayMyBuddy.service.impl;
 
+import com.openclassrooms.PayMyBuddy.exceptions.UserNotFoundException;
 import com.openclassrooms.PayMyBuddy.exceptions.UserWithSameEmailExistsException;
 import com.openclassrooms.PayMyBuddy.exceptions.UserWithSameUserNameExistsException;
 import com.openclassrooms.PayMyBuddy.mapper.UserMapper;
@@ -42,15 +43,18 @@ public class DBUserService implements IDBUserService {
         this.securityService = securityService;
     }
 
+
     /**
      * Find DBUser by email
      *
-     * @param email the email
+     * @param email the email of the user
      * @return the user
+     * @throws UserNotFoundException the user not found exception
      */
     @Override
-    public UserDto findByEmail(String email) {
-        DBUser dbUser = dbUserRepository.findByEmail(email);
+    public UserDto findByEmail(String email) throws UserNotFoundException {
+        DBUser dbUser = dbUserRepository.findByEmail(email)
+                .orElseThrow(() -> new UserNotFoundException("Utilisateur non trouvé avec l'email : " + email));
         return userMapper.toUserDto(dbUser);
     }
 
@@ -58,15 +62,16 @@ public class DBUserService implements IDBUserService {
     /**
      * Find DBUser by username
      *
-     * @param userName the username
+     * @param userName the username of the user
      * @return the user
+     * @throws UserNotFoundException the user not found exception
      */
     @Override
-    public UserDto findByUserName(String userName) {
-        DBUser dbUser = dbUserRepository.findByUserName(userName);
+    public UserDto findByUserName(String userName) throws UserNotFoundException {
+        DBUser dbUser = dbUserRepository.findByUserName(userName)
+                .orElseThrow(() -> new UserNotFoundException("Utilisateur non trouvé avec le username : " + userName));
         return userMapper.toUserDto(dbUser);
     }
-
 
     /**
      * Add a user in the database
@@ -79,15 +84,11 @@ public class DBUserService implements IDBUserService {
     @Override
     public void addUser(UserDto userDto) throws UserWithSameEmailExistsException, UserWithSameUserNameExistsException {
 
-        UserDto userWithSameEmail = findByEmail(userDto.getEmail());
-        if (userWithSameEmail != null) {
-            log.error("====> User with email {} already exists <====", userDto.getEmail());
+        if (isUserExistWithSameEmail(userDto.getEmail())) {
             throw new UserWithSameEmailExistsException(userDto.getEmail());
         }
 
-        UserDto userWithSameUsername = findByUserName(userDto.getUserName());
-        if (userWithSameUsername != null) {
-            log.error("====> User with username {} already exists <====", userDto.getUserName());
+        if (isUserExistWithSameUserName(userDto.getUserName())) {
             throw new UserWithSameUserNameExistsException(userDto.getUserName());
         }
 
@@ -106,27 +107,19 @@ public class DBUserService implements IDBUserService {
      */
     @Transactional
     @Override
-    public void updateUser(UserDto userDto) throws UserWithSameEmailExistsException, UserWithSameUserNameExistsException {
+    public void updateUser(UserDto userDto) throws UserWithSameEmailExistsException, UserWithSameUserNameExistsException, UserNotFoundException {
 
         Authentication authentication = securityService.getAuthentication();
         UserDto currentUser = findByEmail(authentication.getName());
         log.info("====> Update profil : Current user  is {} <====", currentUser);
         log.info("====> Update profil : New datas are {} <====", userDto);
 
-        if (!currentUser.getEmail().equals(userDto.getEmail())) {
-            UserDto userWithSameEmail = findByEmail(userDto.getEmail());
-            if (userWithSameEmail != null) {
-                log.error("====> User with email {} already exists <====", userDto.getEmail());
-                throw new UserWithSameEmailExistsException(userDto.getEmail());
-            }
+        if (!currentUser.getEmail().equals(userDto.getEmail()) && isUserExistWithSameEmail(userDto.getEmail())) {
+            throw new UserWithSameEmailExistsException(userDto.getEmail());
         }
 
-        if (!currentUser.getUserName().equals(userDto.getUserName())) {
-            UserDto userWithSameUsername = findByUserName(userDto.getUserName());
-            if (userWithSameUsername != null) {
-                log.error("====> User with username {} already exists <====", userDto.getUserName());
-                throw new UserWithSameUserNameExistsException(userDto.getUserName());
-            }
+        if (!currentUser.getUserName().equals(userDto.getUserName()) && isUserExistWithSameUserName(userDto.getUserName())) {
+            throw new UserWithSameUserNameExistsException(userDto.getUserName());
         }
 
         DBUser dBuser = userMapper.toDBUser(userDto);
@@ -136,6 +129,35 @@ public class DBUserService implements IDBUserService {
 
         securityService.reauthenticateUser(userDto.getEmail());
     }
+    
+    /**
+     * Check if a user exists with the same email
+     *
+     * @param email the email to check
+     * @return true if the user exists, false otherwise
+     */
+    public boolean isUserExistWithSameEmail(String email) {
+        try {
+            findByEmail(email);
+            return true;
+        } catch (UserNotFoundException e) {
+            return false;
+        }
+    }
 
+    /**
+     * Check if a user exists with the same username
+     *
+     * @param userName the username to check
+     * @return true if the user exists, false otherwise
+     */
+    public boolean isUserExistWithSameUserName(String userName) {
+        try {
+            findByUserName(userName);
+            return true;
+        } catch (UserNotFoundException e) {
+            return false;
+        }
+    }
 
 }

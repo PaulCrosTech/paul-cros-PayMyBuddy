@@ -1,12 +1,11 @@
 package com.openclassrooms.PayMyBuddy.unit.service;
 
+import com.openclassrooms.PayMyBuddy.exceptions.UserNotFoundException;
 import com.openclassrooms.PayMyBuddy.exceptions.UserWithSameEmailExistsException;
 import com.openclassrooms.PayMyBuddy.exceptions.UserWithSameUserNameExistsException;
 import com.openclassrooms.PayMyBuddy.mapper.UserMapper;
-import com.openclassrooms.PayMyBuddy.mapper.UserProfilMapper;
-import com.openclassrooms.PayMyBuddy.mapper.UserRegisterMapper;
 import com.openclassrooms.PayMyBuddy.model.DBUser;
-import com.openclassrooms.PayMyBuddy.model.dto.UserRegisterDto;
+import com.openclassrooms.PayMyBuddy.model.dto.UserDto;
 import com.openclassrooms.PayMyBuddy.repository.DBUserRepository;
 import com.openclassrooms.PayMyBuddy.security.service.SecurityService;
 import com.openclassrooms.PayMyBuddy.service.IDBUserService;
@@ -17,6 +16,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -56,16 +57,44 @@ public class IDBUserServiceTest {
 
         // Given
         String email = "mail@mail.fr";
-        DBUser user = new DBUser();
-        user.setEmail(email);
-        when(dbUserRepository.findByEmail(email)).thenReturn(user);
+
+        DBUser dbUser = new DBUser();
+        dbUser.setEmail(email);
+
+        UserDto userDto = new UserDto();
+        userDto.setEmail(email);
+
+        when(dbUserRepository.findByEmail(email)).thenReturn(Optional.of(dbUser));
+        when(userMapper.toUserDto(dbUser)).thenReturn(userDto);
 
         // When
-        DBUser actualUser = userService.findByEmail(email);
+        UserDto actualUser = userService.findByEmail(email);
 
         // Then
         assertEquals(email, actualUser.getEmail());
     }
+
+    /**
+     * Testing method findByEmail
+     * - Given non-existing email
+     * - When findByEmail
+     * - Then throw UserNotFoundException
+     */
+    @Test
+    public void givenNonExistingEmail_whenFindByEmail_thenThrowUserNotFoundException() {
+
+        // Given
+        String email = "nonExistingEmail@mail.fr";
+        when(dbUserRepository.findByEmail(email)).thenReturn(Optional.empty());
+
+        // When & Then
+        assertThrows(
+                UserNotFoundException.class,
+                () -> userService.findByEmail(email)
+        );
+
+    }
+
 
     /**
      * Testing method findByUserName
@@ -76,17 +105,38 @@ public class IDBUserServiceTest {
     @Test
     public void givenExistingUserName_whenFindByEmail_thenReturnUser() {
 
+
         // Given
         String userName = "userName";
-        DBUser user = new DBUser();
-        user.setUserName(userName);
-        when(dbUserRepository.findByUserName(userName)).thenReturn(user);
+        DBUser dbUser = new DBUser();
+        dbUser.setUserName(userName);
+        UserDto userDto = new UserDto();
+        userDto.setUserName(userName);
+
+        when(dbUserRepository.findByUserName(userName)).thenReturn(Optional.of(dbUser));
+        when(userMapper.toUserDto(dbUser)).thenReturn(userDto);
 
         // When
-        DBUser actualUser = userService.findByUserName(userName);
+        UserDto actualUser = userService.findByUserName(userName);
 
         // Then
         assertEquals(userName, actualUser.getUserName());
+
+    }
+
+    @Test
+    public void givenNonExistingUserName_whenFindByEmail_thenThrowUserNotFoundException() {
+
+        // Given
+        String userName = "nonExistingUserName";
+        when(dbUserRepository.findByUserName(userName)).thenReturn(Optional.empty());
+
+        // When & Then
+        assertThrows(
+                UserNotFoundException.class,
+                () -> userService.findByUserName(userName)
+        );
+
     }
 
     /**
@@ -99,24 +149,24 @@ public class IDBUserServiceTest {
     public void givenValidDBUserRegisterDto_whenAddUser_thenReturnCreatedUser() {
 
         // Given
-        UserRegisterDto userRegisterDto = new UserRegisterDto();
+        UserDto userDto = new UserDto();
+        DBUser dbUser = new DBUser();
 
-        when(dbUserRepository.findByEmail(userRegisterDto.getEmail())).thenReturn(null);
-        when(dbUserRepository.findByUserName(userRegisterDto.getUserName())).thenReturn(null);
-        when(userRegisterMapper.toDBUser(userRegisterDto)).thenReturn(new DBUser());
-        when(dbUserRepository.save(new DBUser())).thenReturn(new DBUser());
+        when(dbUserRepository.findByEmail(userDto.getEmail())).thenReturn(Optional.empty());
+        when(dbUserRepository.findByUserName(userDto.getUserName())).thenReturn(Optional.empty());
+        when(userMapper.toDBUser(userDto)).thenReturn(dbUser);
+        when(dbUserRepository.save(dbUser)).thenReturn(dbUser);
 
 
         // When
-        DBUser actualUser = userService.addUser(userRegisterDto);
+        userService.addUser(userDto);
 
         // Then
-        verify(dbUserRepository, times(1)).findByEmail(userRegisterDto.getEmail());
-        verify(dbUserRepository, times(1)).findByUserName(userRegisterDto.getUserName());
-        verify(userRegisterMapper, times(1)).toDBUser(userRegisterDto);
-        verify(bCryptPasswordEncoder, times(1)).encode(userRegisterDto.getPassword());
-        verify(dbUserRepository, times(1)).save(new DBUser());
-        assertNotNull(actualUser);
+        verify(dbUserRepository, times(1)).findByEmail(userDto.getEmail());
+        verify(dbUserRepository, times(1)).findByUserName(userDto.getUserName());
+        verify(userMapper, times(1)).toDBUser(userDto);
+        verify(bCryptPasswordEncoder, times(1)).encode(userDto.getPassword());
+        verify(dbUserRepository, times(1)).save(dbUser);
 
     }
 
@@ -130,15 +180,19 @@ public class IDBUserServiceTest {
     public void givenExistingEmail_whenAddUser_thenThrowUserWithSameEmailExistsException() {
 
         // Given
-        UserRegisterDto userRegisterDto = new UserRegisterDto();
-        userRegisterDto.setEmail("mail@mail.fr");
+        String email = "mail@mail.fr";
+        UserDto userDto = new UserDto();
+        userDto.setEmail(email);
+        DBUser dbUser = new DBUser();
+        dbUser.setEmail(email);
 
-        when(dbUserRepository.findByEmail(userRegisterDto.getEmail())).thenReturn(new DBUser());
+        when(dbUserRepository.findByEmail(userDto.getEmail())).thenReturn(Optional.of(dbUser));
+        when(userMapper.toUserDto(dbUser)).thenReturn(userDto);
 
         // When & Then
         assertThrows(
                 UserWithSameEmailExistsException.class,
-                () -> userService.addUser(userRegisterDto)
+                () -> userService.addUser(userDto)
         );
 
     }
@@ -151,16 +205,29 @@ public class IDBUserServiceTest {
      */
     @Test
     public void givenExistingUsername_whenAddUser_thenThrowUserWithSameUserNameExistsException() {
-        // Given
-        UserRegisterDto userRegisterDto = new UserRegisterDto();
-        userRegisterDto.setUserName("userName");
 
-        when(dbUserRepository.findByUserName(userRegisterDto.getUserName())).thenReturn(new DBUser());
+        // Given
+        String userName = "userName";
+        String email = "mail@mail.fr";
+
+        UserDto userDto = new UserDto();
+        userDto.setUserName(userName);
+        userDto.setEmail(email);
+
+        DBUser dbUser = new DBUser();
+        dbUser.setUserName(userName);
+        dbUser.setEmail(email);
+
+        when(dbUserRepository.findByEmail(userDto.getEmail())).thenReturn(Optional.empty());
+
+        when(dbUserRepository.findByUserName(userDto.getUserName())).thenReturn(Optional.of(dbUser));
+        when(userMapper.toUserDto(dbUser)).thenReturn(userDto);
 
         // When & Then
         assertThrows(
                 UserWithSameUserNameExistsException.class,
-                () -> userService.addUser(userRegisterDto)
+                () -> userService.addUser(userDto)
         );
+
     }
 }

@@ -38,7 +38,7 @@ public class ProfilController {
     public String profil(Model model, @AuthenticationPrincipal User user) {
         log.info("====> GET /profil page for user {} <====", user);
         model.addAttribute("highlightProfil", true);
-
+        
         UserDto userDto = userService.findByEmail(user.getUsername());
         model.addAttribute("userDto", userDto);
 

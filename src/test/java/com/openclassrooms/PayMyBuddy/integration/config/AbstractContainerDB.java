@@ -1,5 +1,6 @@
 package com.openclassrooms.PayMyBuddy.integration.config;
 
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeAll;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -8,10 +9,10 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.utility.DockerImageName;
 
-
 /**
  * Abstract class for integration tests with a MySQL container.
  */
+@Slf4j
 @SpringBootTest
 @AutoConfigureMockMvc
 public abstract class AbstractContainerDB {
@@ -19,6 +20,7 @@ public abstract class AbstractContainerDB {
     @Autowired
     protected MockMvc mockMvc;
 
+    private static final String INIT_SQL = "init.sql";
 
     /**
      * MySQL container.
@@ -27,7 +29,7 @@ public abstract class AbstractContainerDB {
     protected static final MySQLContainer<?> MY_SQL_CONTAINER =
             new MySQLContainer<>(DockerImageName.parse("mysql:8.0"))
                     .withDatabaseName("integration-tests-db")
-                    .withInitScript("init.sql");
+                    .withInitScript(INIT_SQL);
 
     static {
         MY_SQL_CONTAINER.start();

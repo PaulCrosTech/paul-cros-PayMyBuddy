@@ -6,8 +6,9 @@ import com.openclassrooms.PayMyBuddy.repository.DBUserRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -58,9 +59,9 @@ public class RegisterControllerIT extends AbstractContainerDB {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/login?registered"));
 
-        DBUser user = dbUserRepository.findByEmail("newEmail@mail.fr");
-        assertNotNull(user);
-        assertEquals("newUserName", user.getUserName());
+        Optional<DBUser> user = dbUserRepository.findByEmail("newEmail@mail.fr");
+        assertTrue(user.isPresent());
+        assertEquals("newUserName", user.get().getUserName());
     }
 
     /**
@@ -81,7 +82,7 @@ public class RegisterControllerIT extends AbstractContainerDB {
                         .with(csrf().asHeader()))
                 .andExpect(status().isOk())
                 .andExpect(view().name("register"))
-                .andExpect(model().attributeHasFieldErrorCode("UserRegisterDto", "userName", "error.userRegisterDto"));
+                .andExpect(model().attributeHasFieldErrorCode("userDto", "userName", "error.userDto"));
     }
 
     /**
@@ -102,7 +103,7 @@ public class RegisterControllerIT extends AbstractContainerDB {
                         .with(csrf().asHeader()))
                 .andExpect(status().isOk())
                 .andExpect(view().name("register"))
-                .andExpect(model().attributeHasFieldErrorCode("UserRegisterDto", "email", "error.userRegisterDto"));
+                .andExpect(model().attributeHasFieldErrorCode("userDto", "email", "error.userDto"));
     }
 
     /**
@@ -123,7 +124,7 @@ public class RegisterControllerIT extends AbstractContainerDB {
                         .with(csrf().asHeader()))
                 .andExpect(status().isOk())
                 .andExpect(view().name("register"))
-                .andExpect(model().attributeHasFieldErrorCode("UserRegisterDto", "password", "ValidPassword"));
+                .andExpect(model().attributeHasFieldErrorCode("userDto", "password", "ValidPassword"));
     }
 
 
