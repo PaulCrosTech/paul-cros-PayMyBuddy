@@ -40,13 +40,13 @@ public class SecurityService {
     }
 
     /**
-     * Get the current authentication.
+     * Get the current authentication email.
      *
-     * @return the authentication
+     * @return the email of the current authentication
      */
-    public Authentication getAuthentication() {
+    public String getAuthenticationEmail() {
         log.info("====> Get the current authentication <====");
-        return SecurityContextHolder.getContext().getAuthentication();
+        return SecurityContextHolder.getContext().getAuthentication().getName();
     }
 
 }

@@ -109,8 +109,7 @@ public class DBUserService implements IDBUserService {
     @Override
     public void updateUser(UserDto userDto) throws UserWithSameEmailExistsException, UserWithSameUserNameExistsException, UserNotFoundException {
 
-        Authentication authentication = securityService.getAuthentication();
-        UserDto currentUser = findByEmail(authentication.getName());
+        UserDto currentUser = findByEmail(securityService.getAuthenticationEmail());
         log.info("====> Update profil : Current user  is {} <====", currentUser);
         log.info("====> Update profil : New datas are {} <====", userDto);
 
@@ -129,7 +128,7 @@ public class DBUserService implements IDBUserService {
 
         securityService.reauthenticateUser(userDto.getEmail());
     }
-    
+
     /**
      * Check if a user exists with the same email
      *
