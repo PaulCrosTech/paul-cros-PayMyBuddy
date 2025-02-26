@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/user_layout.html}">
+<head>
+</head>
+<body>
+<div class="container" layout:fragment="content">
+
+    <div class="row mt-3" th:if="${param.success}">
+        <div class="col-6 mx-auto">
+            <div class="alert alert-success text-center" role="alert">
+                Relation ajoutée avec succès.
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-3" th:if="${error}">
+        <div class="col-6 mx-auto">
+            <div class="alert alert-danger text-center" role="alert" th:text="${error}">
+            </div>
+        </div>
+    </div>
+
+    <div class="row pt-5">
+        <div class="col-6 mx-auto pt-5 border">
+            <form method="post" th:action="@{/relations}" th:object="${relationsForm}">
+
+                <div class="mb-3">
+                    <label for="email">Chercher une relation</label>
+                    <div class="input-group">
+                        <input type="email" id="email" th:field="*{email}" class="form-control"
+                               th:classappend="${#fields.hasErrors('email')} ? 'is-invalid' : ''"
+                               aria-describedby="emailFeedback" placeholder="Saisir une adresse mail">
+                        <div id="emailFeedback"
+                             th:classappend="${#fields.hasErrors('email')} ? 'invalid-feedback'"
+                             th:errors="*{email}"></div>
+                    </div>
+                </div>
+
+
+                <div class="mb-3 text-center">
+                    <button type="submit" class="btn btn-warning text-white">Ajouter</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>

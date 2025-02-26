@@ -44,6 +44,7 @@ public class SecurityService {
      *
      * @return the email of the current authentication
      */
+    // TODO : à supprimer je pense que cela n'a pas d'utilité en fait
     public String getAuthenticationEmail() {
         log.info("====> Get the current authentication <====");
         return SecurityContextHolder.getContext().getAuthentication().getName();

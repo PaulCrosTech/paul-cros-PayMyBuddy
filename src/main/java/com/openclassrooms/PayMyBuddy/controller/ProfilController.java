@@ -15,12 +15,14 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
  * Controller for the profil page.
  */
 @Slf4j
 @Controller
+@RequestMapping(path = "/profil")
 public class ProfilController {
 
     private final IDBUserService userService;
@@ -34,11 +36,11 @@ public class ProfilController {
      *
      * @return the transfer page.
      */
-    @GetMapping(path = "/profil")
+    @GetMapping
     public String profil(Model model, @AuthenticationPrincipal User user) {
         log.info("====> GET /profil page for user {} <====", user);
         model.addAttribute("highlightProfil", true);
-        
+
         UserDto userDto = userService.findByEmail(user.getUsername());
         model.addAttribute("userDto", userDto);
 
@@ -53,7 +55,7 @@ public class ProfilController {
      * @param model         the model
      * @return the profil page
      */
-    @PostMapping(path = "/profil")
+    @PostMapping
     public String profil(@Valid @ModelAttribute UserDto userDto,
                          BindingResult bindingResult,
                          Model model) {

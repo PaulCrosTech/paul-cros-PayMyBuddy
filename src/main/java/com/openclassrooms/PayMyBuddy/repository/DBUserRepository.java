@@ -1,6 +1,5 @@
 package com.openclassrooms.PayMyBuddy.repository;
 
-import com.openclassrooms.PayMyBuddy.exceptions.UserNotFoundException;
 import com.openclassrooms.PayMyBuddy.model.DBUser;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -19,7 +18,7 @@ public interface DBUserRepository extends JpaRepository<DBUser, Integer> {
      * @param email the email
      * @return the user
      */
-    Optional<DBUser> findByEmail(String email) throws UserNotFoundException;
+    Optional<DBUser> findByEmail(String email);
 
 
     /**
@@ -28,5 +27,7 @@ public interface DBUserRepository extends JpaRepository<DBUser, Integer> {
      * @param userName the username
      * @return the user
      */
-    Optional<DBUser> findByUserName(String userName) throws UserNotFoundException;
+    Optional<DBUser> findByUserName(String userName);
+
+
 }

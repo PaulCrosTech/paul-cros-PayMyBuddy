@@ -1,5 +1,7 @@
 package com.openclassrooms.PayMyBuddy.service;
 
+import com.openclassrooms.PayMyBuddy.exceptions.UserNotFoundException;
+import com.openclassrooms.PayMyBuddy.exceptions.UserRelationException;
 import com.openclassrooms.PayMyBuddy.exceptions.UserWithSameEmailExistsException;
 import com.openclassrooms.PayMyBuddy.exceptions.UserWithSameUserNameExistsException;
 import com.openclassrooms.PayMyBuddy.model.dto.UserDto;
@@ -16,7 +18,7 @@ public interface IDBUserService {
      * @param email the email
      * @return the user
      */
-    UserDto findByEmail(String email);
+    UserDto findByEmail(String email) throws UserNotFoundException;
 
     /**
      * Find DBUser by username
@@ -24,7 +26,7 @@ public interface IDBUserService {
      * @param userName the username
      * @return the user
      */
-    UserDto findByUserName(String userName);
+    UserDto findByUserName(String userName) throws UserNotFoundException;
 
 
     /**
@@ -45,4 +47,17 @@ public interface IDBUserService {
      * @throws UserWithSameUserNameExistsException the user with the same username exists exception
      */
     void updateUser(UserDto userDto) throws UserWithSameEmailExistsException, UserWithSameUserNameExistsException;
+
+
+    /**
+     * Add a relation between two users
+     *
+     * @param userEmail   the user email
+     * @param friendEmail the friend email
+     * @throws UserNotFoundException the user not found exception
+     * @throws UserRelationException the user relation exception
+     */
+    void addRelation(String userEmail, String friendEmail) throws UserNotFoundException, UserRelationException;
+
+
 }

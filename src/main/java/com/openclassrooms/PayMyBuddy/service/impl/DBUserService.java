@@ -1,6 +1,7 @@
 package com.openclassrooms.PayMyBuddy.service.impl;
 
 import com.openclassrooms.PayMyBuddy.exceptions.UserNotFoundException;
+import com.openclassrooms.PayMyBuddy.exceptions.UserRelationException;
 import com.openclassrooms.PayMyBuddy.exceptions.UserWithSameEmailExistsException;
 import com.openclassrooms.PayMyBuddy.exceptions.UserWithSameUserNameExistsException;
 import com.openclassrooms.PayMyBuddy.mapper.UserMapper;
@@ -10,10 +11,12 @@ import com.openclassrooms.PayMyBuddy.repository.DBUserRepository;
 import com.openclassrooms.PayMyBuddy.security.service.SecurityService;
 import com.openclassrooms.PayMyBuddy.service.IDBUserService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.Authentication;
+import org.hibernate.Hibernate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 /**
  * The class DBUser service.
@@ -109,6 +112,7 @@ public class DBUserService implements IDBUserService {
     @Override
     public void updateUser(UserDto userDto) throws UserWithSameEmailExistsException, UserWithSameUserNameExistsException, UserNotFoundException {
 
+        // TODO : A supprimer il faut le passer en paramètre !!
         UserDto currentUser = findByEmail(securityService.getAuthenticationEmail());
         log.info("====> Update profil : Current user  is {} <====", currentUser);
         log.info("====> Update profil : New datas are {} <====", userDto);
@@ -129,13 +133,55 @@ public class DBUserService implements IDBUserService {
         securityService.reauthenticateUser(userDto.getEmail());
     }
 
+
+    /**
+     * Add a relation between two users
+     *
+     * @param userEmail   the user email to add the relation
+     * @param friendEmail the friend email to add the relation
+     * @throws UserNotFoundException the user or friend is not found exception
+     * @throws UserRelationException the user relation exception (self relation or already connected)
+     */
+    @Transactional
+    @Override
+    public void addRelation(String userEmail, String friendEmail) throws UserNotFoundException, UserRelationException {
+
+        log.info("====> Adding relation between user '{}' and friend '{}' <====", userEmail, friendEmail);
+
+        if (userEmail.equals(friendEmail)) {
+            log.error("====> Error : User and friend email are the same, can't add self relation <====");
+            throw new UserRelationException("Vous ne pouvez pas vous ajouter en ami.");
+        }
+
+        DBUser dbUser = dbUserRepository.findByEmail(userEmail)
+                .orElseThrow(() -> new UserNotFoundException("Utilisateur non trouvé avec l'email : " + userEmail));
+        log.debug("====> User found : {} <====", dbUser);
+
+        DBUser dbFriend = dbUserRepository.findByEmail(friendEmail)
+                .orElseThrow(() -> new UserNotFoundException("Utilisateur non trouvé avec l'email : " + friendEmail));
+        log.debug("====> Friend found : {} <====", dbFriend);
+
+
+        Hibernate.initialize(dbUser.getConnections());
+        List<DBUser> connections = dbUser.getConnections();
+        connections.stream()
+                .filter(c -> c.getUserId() == dbFriend.getUserId())
+                .findFirst()
+                .ifPresent(c -> {
+                    log.error("====> Error : User and friend are already connected <====");
+                    throw new UserRelationException("Vous êtes déjà amis.");
+                });
+
+        dbUser.getConnections().add(dbFriend);
+    }
+
     /**
      * Check if a user exists with the same email
      *
      * @param email the email to check
      * @return true if the user exists, false otherwise
      */
-    public boolean isUserExistWithSameEmail(String email) {
+    private boolean isUserExistWithSameEmail(String email) {
         try {
             findByEmail(email);
             return true;
@@ -150,7 +196,7 @@ public class DBUserService implements IDBUserService {
      * @param userName the username to check
      * @return true if the user exists, false otherwise
      */
-    public boolean isUserExistWithSameUserName(String userName) {
+    private boolean isUserExistWithSameUserName(String userName) {
         try {
             findByUserName(userName);
             return true;

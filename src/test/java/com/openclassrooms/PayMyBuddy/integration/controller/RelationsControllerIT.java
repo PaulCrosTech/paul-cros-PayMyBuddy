@@ -13,20 +13,20 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * Integration tests for ProfilController
  */
 @WithMockUser(username = "alice@mail.fr")
-public class FriendsControllerIT extends AbstractContainerDB {
+public class RelationsControllerIT extends AbstractContainerDB {
 
 
     /**
-     * Test of friends page
+     * Test if the relations page is displayed when the user is authenticated
      *
-     * @throws Exception exception
+     * @throws Exception if the test fails
      */
     @Test
-    public void givenAuthenticatedUser_whenAccessToFriendsPage_thenReturnFriendsPage() throws Exception {
+    public void givenAuthenticatedUser_whenAccessToRelationsPage_thenReturnRelationsPage() throws Exception {
 
-        mockMvc.perform(get("/friends"))
+        mockMvc.perform(get("/relations"))
                 .andExpect(status().isOk())
-                .andExpect(view().name("friends"));
+                .andExpect(view().name("relations"));
     }
-    
+
 }

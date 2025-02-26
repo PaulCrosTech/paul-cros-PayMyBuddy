@@ -20,7 +20,7 @@ public class UnauthorizedAccessIT extends AbstractContainerDB {
      * @throws Exception exception
      */
     @ParameterizedTest
-    @ValueSource(strings = {"/profil", "/transfer", "/friends"})
+    @ValueSource(strings = {"/profil", "/transfer", "/relations"})
     public void givenUnauthenticatedUser_whenAccessToSecuredPage_thenRedirectToLoginPage(String securedPage) throws Exception {
         mockMvc.perform(get(securedPage))
                 .andExpect(status().is3xxRedirection())
