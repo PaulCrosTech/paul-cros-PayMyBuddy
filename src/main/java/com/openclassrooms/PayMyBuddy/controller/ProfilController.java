@@ -58,7 +58,8 @@ public class ProfilController {
     @PostMapping
     public String profil(@Valid @ModelAttribute UserDto userDto,
                          BindingResult bindingResult,
-                         Model model) {
+                         Model model,
+                         @AuthenticationPrincipal User user) {
         log.info("====> POST /profil page <====");
         model.addAttribute("highlightProfil", true);
 
@@ -70,7 +71,7 @@ public class ProfilController {
 
         // Save user in DB
         try {
-            userService.updateUser(userDto);
+            userService.updateUser(user.getUsername(), userDto);
         } catch (UserWithSameEmailExistsException | UserWithSameUserNameExistsException e) {
             log.debug("====> Error in /profil form : {} <====", e.getMessage());
 

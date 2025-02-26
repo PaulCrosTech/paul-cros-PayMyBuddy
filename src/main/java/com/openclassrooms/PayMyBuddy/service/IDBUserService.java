@@ -40,13 +40,15 @@ public interface IDBUserService {
 
 
     /**
-     * Update user.
+     * Update a user
      *
-     * @param userDto the user to update
+     * @param userEmail the user email
+     * @param userDto   updated datas of user
      * @throws UserWithSameEmailExistsException    the user with the same email exists exception
      * @throws UserWithSameUserNameExistsException the user with the same username exists exception
+     * @throws UserNotFoundException               the user not found exception
      */
-    void updateUser(UserDto userDto) throws UserWithSameEmailExistsException, UserWithSameUserNameExistsException;
+    void updateUser(String userEmail, UserDto userDto) throws UserWithSameEmailExistsException, UserWithSameUserNameExistsException, UserNotFoundException;
 
 
     /**

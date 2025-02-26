@@ -102,35 +102,38 @@ public class DBUserService implements IDBUserService {
 
 
     /**
-     * Update user.
+     * Update a user
      *
-     * @param userDto the user to update in the database
+     * @param userEmail the user email
+     * @param userDto   updated datas of user
      * @throws UserWithSameEmailExistsException    the user with the same email exists exception
      * @throws UserWithSameUserNameExistsException the user with the same username exists exception
+     * @throws UserNotFoundException               the user not found exception
      */
     @Transactional
     @Override
-    public void updateUser(UserDto userDto) throws UserWithSameEmailExistsException, UserWithSameUserNameExistsException, UserNotFoundException {
+    public void updateUser(String userEmail, UserDto userDto) throws UserWithSameEmailExistsException, UserWithSameUserNameExistsException, UserNotFoundException {
 
-        // TODO : A supprimer il faut le passer en paramètre !!
-        UserDto currentUser = findByEmail(securityService.getAuthenticationEmail());
-        log.info("====> Update profil : Current user  is {} <====", currentUser);
-        log.info("====> Update profil : New datas are {} <====", userDto);
+        DBUser currentDbUser = dbUserRepository.findByEmail(userEmail)
+                .orElseThrow(() -> new UserNotFoundException("Utilisateur non trouvé avec l'email : " + userEmail));
 
-        if (!currentUser.getEmail().equals(userDto.getEmail()) && isUserExistWithSameEmail(userDto.getEmail())) {
+        log.info("====> Update profil : Current user  is {} <====", currentDbUser.getUserName());
+        log.info("====> Update profil : New datas are {} <====", userDto.getUserName());
+
+        if (!currentDbUser.getEmail().equals(userDto.getEmail()) && isUserExistWithSameEmail(userDto.getEmail())) {
             throw new UserWithSameEmailExistsException(userDto.getEmail());
         }
 
-        if (!currentUser.getUserName().equals(userDto.getUserName()) && isUserExistWithSameUserName(userDto.getUserName())) {
+        if (!currentDbUser.getUserName().equals(userDto.getUserName()) && isUserExistWithSameUserName(userDto.getUserName())) {
             throw new UserWithSameUserNameExistsException(userDto.getUserName());
         }
 
-        DBUser dBuser = userMapper.toDBUser(userDto);
-        dBuser.setUserId(currentUser.getUserId());
-        dBuser.setPassword(bCryptPasswordEncoder.encode(userDto.getPassword()));
-        dbUserRepository.save(dBuser);
+        currentDbUser.setUserName(userDto.getUserName());
+        currentDbUser.setEmail(userDto.getEmail());
+        currentDbUser.setPassword(bCryptPasswordEncoder.encode(userDto.getPassword()));
+        dbUserRepository.save(currentDbUser);
 
-        securityService.reauthenticateUser(userDto.getEmail());
+        securityService.reauthenticateUser(currentDbUser.getEmail());
     }
 
 
