@@ -1,5 +1,6 @@
 package com.openclassrooms.PayMyBuddy.controller;
 
+import com.openclassrooms.PayMyBuddy.exceptions.UserNotFoundException;
 import com.openclassrooms.PayMyBuddy.exceptions.UserWithSameEmailExistsException;
 import com.openclassrooms.PayMyBuddy.exceptions.UserWithSameUserNameExistsException;
 import com.openclassrooms.PayMyBuddy.model.dto.UserDto;
@@ -87,6 +88,10 @@ public class ProfilController {
                     null,
                     e.getMessage()
             ));
+            return "profil";
+        } catch (UserNotFoundException e) {
+            // TODO : comment déconnecté le user
+            log.error("====> Error in /profil form Disconnect user  : {} <====", e.getMessage());
             return "profil";
         }
 

@@ -244,50 +244,56 @@ public class IDBUserServiceTest {
      * - Then user is updated
      */
     @Test
-    public void givenValidUserDto_whenUpdateUser_thenUserIsUpdated() {
+    public void givenValidUserMailAndUserDto_whenUpdateUser_thenUserIsUpdated() {
 
         // Given
 
         // Current user datas
-        UserDto currentUser = new UserDto();
-        currentUser.setUserId(1);
-        currentUser.setUserName("alice");
-        currentUser.setEmail("alice@mail.fr");
-        currentUser.setPassword("ActualPasswordEncoded");
+        DBUser currentDbUser = new DBUser();
+        currentDbUser.setUserId(1);
+        currentDbUser.setUserName("alice");
+        currentDbUser.setEmail("alice@mail.fr");
+        currentDbUser.setPassword("ActualPasswordEncoded");
 
         // Updated datas (only password is updated)
         UserDto userDto = new UserDto();
-        userDto.setUserName(currentUser.getUserName());
-        userDto.setEmail(currentUser.getEmail());
+        userDto.setUserName(currentDbUser.getUserName());
+        userDto.setEmail(currentDbUser.getEmail());
         userDto.setPassword("NewPasswordClear");
 
-        when(securityService.getAuthenticationEmail()).thenReturn(currentUser.getEmail());
-        when(dbUserRepository.findByEmail(currentUser.getEmail())).thenReturn(Optional.of(new DBUser()));
-        when(userMapper.toUserDto(any(DBUser.class))).thenReturn(currentUser);
 
-
-        when(userMapper.toDBUser(userDto)).thenReturn(new DBUser());
+        when(dbUserRepository.findByEmail(currentDbUser.getEmail())).thenReturn(Optional.of(currentDbUser));
         when(bCryptPasswordEncoder.encode(userDto.getPassword())).thenReturn("NewPasswordEncoded");
         when(dbUserRepository.save(any(DBUser.class))).thenReturn(new DBUser());
 
-
         // When
-        userService.updateUser(userDto);
-
+        userService.updateUser(currentDbUser.getEmail(), userDto);
 
         // Then
-        verify(securityService, times(1)).getAuthenticationEmail();
-        verify(dbUserRepository, times(1)).findByEmail(currentUser.getEmail());
-        verify(userMapper, times(1)).toUserDto(any(DBUser.class));
-
-        verify(userMapper, times(1)).toDBUser(userDto);
+        verify(dbUserRepository, times(1)).findByEmail(currentDbUser.getEmail());
         verify(bCryptPasswordEncoder, times(1)).encode(userDto.getPassword());
-        verify(dbUserRepository, times(1)).save(any(DBUser.class));
-        verify(securityService, times(1)).reauthenticateUser(userDto.getEmail());
-
-
+        verify(dbUserRepository, times(1)).save(currentDbUser);
+        verify(securityService, times(1)).reauthenticateUser(currentDbUser.getEmail());
     }
 
+
+    /**
+     * Testing method updateUser
+     * - Given unknown user mail
+     * - When updateUser
+     * - Then throw UserNotFoundException and user is not updated
+     */
+    @Test
+    public void givenInvalidUserMail_whenUpdateUser_thenThrowUserNotFoundException() {
+
+        // Given
+        when(dbUserRepository.findByEmail("unknown@mail.fr")).thenReturn(Optional.empty());
+
+        // When & Then
+        assertThrows(UserNotFoundException.class, () -> userService.updateUser("unknown@mail.fr", new UserDto()));
+
+        verify(dbUserRepository, never()).save(any(DBUser.class));
+    }
 
     /**
      * Testing method updateUser
@@ -298,8 +304,9 @@ public class IDBUserServiceTest {
     @Test
     public void givenUpdateEmailWithEmailAlreadyUsed_whenUpdateUser_thenThrowUserWithSameEmailExistsException() {
         // Current user datas
-        UserDto currentUser = new UserDto();
-        currentUser.setEmail("alice@mail.fr");
+        DBUser currentDbUser = new DBUser();
+        currentDbUser.setUserId(1);
+        currentDbUser.setEmail("alice@mail.fr");
 
         // Updated datas
         UserDto userDto = new UserDto();
@@ -308,15 +315,14 @@ public class IDBUserServiceTest {
         DBUser dbUserWithSameEmail = new DBUser();
         dbUserWithSameEmail.setEmail(userDto.getEmail());
 
-        when(securityService.getAuthenticationEmail()).thenReturn("alice@mail.fr");
-        when(dbUserRepository.findByEmail("alice@mail.fr")).thenReturn(Optional.of(new DBUser()));
-        when(userMapper.toUserDto(any(DBUser.class))).thenReturn(currentUser);
+        when(dbUserRepository.findByEmail(currentDbUser.getEmail())).thenReturn(Optional.of(currentDbUser));
+
 
         when(dbUserRepository.findByEmail(userDto.getEmail())).thenReturn(Optional.of(dbUserWithSameEmail));
         when(userMapper.toUserDto(dbUserWithSameEmail)).thenReturn(new UserDto());
 
         // When & Then
-        assertThrows(UserWithSameEmailExistsException.class, () -> userService.updateUser(userDto));
+        assertThrows(UserWithSameEmailExistsException.class, () -> userService.updateUser(currentDbUser.getEmail(), userDto));
         verify(dbUserRepository, never()).save(any(DBUser.class));
 
     }
@@ -330,9 +336,10 @@ public class IDBUserServiceTest {
     @Test
     public void givenUpdateUserNameWithUserNameAlreadyUsed_whenUpdateUser_thenThrowUserWithSameUserNameExistsException() {
         // Current user datas
-        UserDto currentUser = new UserDto();
-        currentUser.setEmail("alice@mail.fr");
-        currentUser.setUserName("alice");
+        DBUser currentDbUser = new DBUser();
+        currentDbUser.setUserId(1);
+        currentDbUser.setUserName("alice");
+        currentDbUser.setEmail("alice@mail.fr");
 
         // Updated datas
         UserDto userDto = new UserDto();
@@ -343,19 +350,13 @@ public class IDBUserServiceTest {
         dbUserWithSameUserName.setEmail(userDto.getEmail());
         dbUserWithSameUserName.setUserName(userDto.getUserName());
 
-
-        when(securityService.getAuthenticationEmail()).thenReturn("alice@mail.fr");
-        when(dbUserRepository.findByEmail("alice@mail.fr")).thenReturn(Optional.of(new DBUser()));
-        when(userMapper.toUserDto(any(DBUser.class))).thenReturn(currentUser);
-
+        when(dbUserRepository.findByEmail(currentDbUser.getEmail())).thenReturn(Optional.of(currentDbUser));
         when(dbUserRepository.findByUserName(userDto.getUserName())).thenReturn(Optional.of(dbUserWithSameUserName));
         when(userMapper.toUserDto(dbUserWithSameUserName)).thenReturn(new UserDto());
 
         // When & Then
-        assertThrows(UserWithSameUserNameExistsException.class, () -> userService.updateUser(userDto));
+        assertThrows(UserWithSameUserNameExistsException.class, () -> userService.updateUser(currentDbUser.getEmail(), userDto));
         verify(dbUserRepository, never()).save(any(DBUser.class));
-
     }
-
 
 }

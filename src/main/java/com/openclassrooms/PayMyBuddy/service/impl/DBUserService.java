@@ -114,6 +114,7 @@ public class DBUserService implements IDBUserService {
     @Override
     public void updateUser(String userEmail, UserDto userDto) throws UserWithSameEmailExistsException, UserWithSameUserNameExistsException, UserNotFoundException {
 
+
         DBUser currentDbUser = dbUserRepository.findByEmail(userEmail)
                 .orElseThrow(() -> new UserNotFoundException("Utilisateur non trouvé avec l'email : " + userEmail));
 
