@@ -1,8 +1,8 @@
 package com.openclassrooms.PayMyBuddy.controller;
 
+import com.openclassrooms.PayMyBuddy.dto.RelationsFormDto;
 import com.openclassrooms.PayMyBuddy.exceptions.UserNotFoundException;
 import com.openclassrooms.PayMyBuddy.exceptions.UserRelationException;
-import com.openclassrooms.PayMyBuddy.model.forms.RelationsForm;
 import com.openclassrooms.PayMyBuddy.repository.DBUserRepository;
 import com.openclassrooms.PayMyBuddy.service.IDBUserService;
 import jakarta.validation.Valid;
@@ -31,7 +31,7 @@ public class RelationsController {
         log.info("====> GET /relations page <====");
 
         model.addAttribute("highlightRelations", true);
-        model.addAttribute("relationsForm", new RelationsForm());
+        model.addAttribute("relationsFormDto", new RelationsFormDto());
 
 
         return "relations";
@@ -39,11 +39,11 @@ public class RelationsController {
 
 
     @PostMapping
-    public String relations(@Valid @ModelAttribute RelationsForm relationsForm,
+    public String relations(@Valid @ModelAttribute RelationsFormDto relationsFormDto,
                             BindingResult bindingResult, Model model,
                             @AuthenticationPrincipal User user) {
 
-        log.info("====> POST /relations page {} <====", relationsForm.getEmail());
+        log.info("====> POST /relations page {} <====", relationsFormDto.getEmail());
         model.addAttribute("highlightRelations", true);
 
         if (bindingResult.hasErrors()) {
@@ -52,7 +52,7 @@ public class RelationsController {
         }
 
         try {
-            userService.addRelation(user.getUsername(), relationsForm.getEmail());
+            userService.addRelation(user.getUsername(), relationsFormDto.getEmail());
         } catch (UserNotFoundException | UserRelationException e) {
             log.debug("====> Error creating relation : {} <====", e.getMessage());
             model.addAttribute("error", e.getMessage());

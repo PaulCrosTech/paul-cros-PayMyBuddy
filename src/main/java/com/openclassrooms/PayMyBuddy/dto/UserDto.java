@@ -1,4 +1,4 @@
-package com.openclassrooms.PayMyBuddy.model.dto;
+package com.openclassrooms.PayMyBuddy.dto;
 
 import com.openclassrooms.PayMyBuddy.validators.annotations.ValidEmail;
 import com.openclassrooms.PayMyBuddy.validators.annotations.ValidPassword;

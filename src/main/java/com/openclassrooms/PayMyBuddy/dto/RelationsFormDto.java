@@ -1,10 +1,10 @@
-package com.openclassrooms.PayMyBuddy.model.forms;
+package com.openclassrooms.PayMyBuddy.dto;
 
 import com.openclassrooms.PayMyBuddy.validators.annotations.ValidEmail;
 import lombok.Data;
 
 @Data
-public class RelationsForm {
+public class RelationsFormDto {
 
     @ValidEmail
     private String email;

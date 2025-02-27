@@ -4,10 +4,9 @@ import com.openclassrooms.PayMyBuddy.exceptions.UserNotFoundException;
 import com.openclassrooms.PayMyBuddy.exceptions.UserWithSameEmailExistsException;
 import com.openclassrooms.PayMyBuddy.exceptions.UserWithSameUserNameExistsException;
 import com.openclassrooms.PayMyBuddy.mapper.UserMapper;
-import com.openclassrooms.PayMyBuddy.model.DBUser;
-import com.openclassrooms.PayMyBuddy.model.dto.UserDto;
+import com.openclassrooms.PayMyBuddy.entity.DBUser;
+import com.openclassrooms.PayMyBuddy.dto.UserDto;
 import com.openclassrooms.PayMyBuddy.repository.DBUserRepository;
-import com.openclassrooms.PayMyBuddy.security.service.SecurityService;
 import com.openclassrooms.PayMyBuddy.service.IDBUserService;
 import com.openclassrooms.PayMyBuddy.service.impl.DBUserService;
 import org.junit.jupiter.api.BeforeEach;
@@ -31,8 +30,6 @@ public class IDBUserServiceTest {
     @Mock
     private BCryptPasswordEncoder bCryptPasswordEncoder;
     @Mock
-    private SecurityService securityService;
-    @Mock
     private UserMapper userMapper;
 
 
@@ -42,7 +39,6 @@ public class IDBUserServiceTest {
     public void setUpPerTest() {
         userService = new DBUserService(dbUserRepository,
                 bCryptPasswordEncoder,
-                securityService,
                 userMapper);
     }
 
@@ -273,7 +269,6 @@ public class IDBUserServiceTest {
         verify(dbUserRepository, times(1)).findByEmail(currentDbUser.getEmail());
         verify(bCryptPasswordEncoder, times(1)).encode(userDto.getPassword());
         verify(dbUserRepository, times(1)).save(currentDbUser);
-        verify(securityService, times(1)).reauthenticateUser(currentDbUser.getEmail());
     }
 
 

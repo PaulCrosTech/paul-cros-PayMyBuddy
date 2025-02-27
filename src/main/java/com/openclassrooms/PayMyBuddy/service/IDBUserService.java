@@ -4,7 +4,10 @@ import com.openclassrooms.PayMyBuddy.exceptions.UserNotFoundException;
 import com.openclassrooms.PayMyBuddy.exceptions.UserRelationException;
 import com.openclassrooms.PayMyBuddy.exceptions.UserWithSameEmailExistsException;
 import com.openclassrooms.PayMyBuddy.exceptions.UserWithSameUserNameExistsException;
-import com.openclassrooms.PayMyBuddy.model.dto.UserDto;
+import com.openclassrooms.PayMyBuddy.entity.DBUser;
+import com.openclassrooms.PayMyBuddy.dto.UserDto;
+
+import java.util.List;
 
 /**
  * The interface DBUser service.
@@ -61,5 +64,14 @@ public interface IDBUserService {
      */
     void addRelation(String userEmail, String friendEmail) throws UserNotFoundException, UserRelationException;
 
+
+    /**
+     * Get all connections of a user
+     *
+     * @param userEmail the user email
+     * @return the list of connections
+     * @throws UserNotFoundException the user not found exception
+     */
+    List<DBUser> getConnections(String userEmail) throws UserNotFoundException;
 
 }

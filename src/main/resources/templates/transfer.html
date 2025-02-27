@@ -5,7 +5,90 @@
 </head>
 <body>
 <div class="container" layout:fragment="content">
-    <h1>Transférer de l'argent</h1>
+    <div class="row mt-3" th:if="${param.success}">
+        <div class="col-6 mx-auto">
+            <div class="alert alert-success text-center" role="alert">
+                Transfer réalisé avec succès.
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-3" th:if="${error}">
+        <div class="col-6 mx-auto">
+            <div class="alert alert-danger text-center" role="alert" th:text="${error}">
+            </div>
+        </div>
+    </div>
+
+    <div class="row pt-5">
+        <form method="post" th:action="@{/transfer}" th:object="${transferFormDto}">
+
+            <div class="row">
+
+                <div class="col">
+                    <select class="form-select" id="connections" name="connections">
+                        <option disabled selected>Sélectionner une relation</option>
+                        <option th:each="connection : ${transferFormDto.connections}"
+                                th:value="${connection.getUserId()}"
+                                th:text="${connection.getUserName()}"></option>
+                    </select>
+                </div>
+
+                <div class="col">
+                    <input type="text" id="description" th:field="*{description}" class="form-control"
+                           th:classappend="${#fields.hasErrors('description')} ? 'is-invalid' : (${#fields.hasAnyErrors()} ? 'is-valid' : '')"
+                           aria-describedby="descriptionFeedback" placeholder="Description">
+                    <div id="descriptionFeedback"
+                         th:classappend="${#fields.hasErrors('description')} ? 'invalid-feedback'"
+                         th:errors="*{description}"></div>
+                </div>
+
+                <div class="col">
+                    <input type="number" id="amount" th:field="*{amount}" class="form-control"
+                           th:classappend="${#fields.hasErrors('amount')} ? 'is-invalid' : (${#fields.hasAnyErrors()} ? 'is-valid' : '')"
+                           min="1">
+                </div>
+
+                <div class="col">
+                    <button type="submit" class="btn btn-primary text-white">Payer</button>
+                </div>
+
+            </div>
+
+
+        </form>
+        <div class="row">
+
+            <table class="table caption-top">
+                <caption>Mes transactions</caption>
+                <thead>
+                <tr>
+                    <th scope="col">Relation</th>
+                    <th scope="col">Description</th>
+                    <th scope="col">Montant</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>Mark</td>
+                    <td>Otto</td>
+                    <td>@mdo</td>
+                </tr>
+                <tr>
+                    <td>Jacob</td>
+                    <td>Thornton</td>
+                    <td>@fat</td>
+                </tr>
+                <tr>
+                    <td>Larry</td>
+                    <td>the Bird</td>
+                    <td>@twitter</td>
+                </tr>
+                </tbody>
+            </table>
+
+        </div>
+    </div>
 </div>
 </body>
 </html>

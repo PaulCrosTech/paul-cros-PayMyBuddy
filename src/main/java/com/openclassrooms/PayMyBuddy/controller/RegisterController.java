@@ -2,7 +2,7 @@ package com.openclassrooms.PayMyBuddy.controller;
 
 import com.openclassrooms.PayMyBuddy.exceptions.UserWithSameEmailExistsException;
 import com.openclassrooms.PayMyBuddy.exceptions.UserWithSameUserNameExistsException;
-import com.openclassrooms.PayMyBuddy.model.dto.UserDto;
+import com.openclassrooms.PayMyBuddy.dto.UserDto;
 import com.openclassrooms.PayMyBuddy.service.IDBUserService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;

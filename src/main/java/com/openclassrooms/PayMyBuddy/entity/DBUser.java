@@ -1,4 +1,4 @@
-package com.openclassrooms.PayMyBuddy.model;
+package com.openclassrooms.PayMyBuddy.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

@@ -1,7 +1,7 @@
 package com.openclassrooms.PayMyBuddy.integration.controller;
 
 import com.openclassrooms.PayMyBuddy.integration.config.AbstractContainerDB;
-import com.openclassrooms.PayMyBuddy.model.dto.UserDto;
+import com.openclassrooms.PayMyBuddy.dto.UserDto;
 import com.openclassrooms.PayMyBuddy.repository.DBUserRepository;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
@@ -73,7 +73,7 @@ public class ProfilControllerIT extends AbstractContainerDB {
                         .param("email", "validMail@mail.fr")
                         .param("password", "Password@1"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(view().name("redirect:/profil?success"))
+                .andExpect(view().name("redirect:/logout"))
                 .andReturn();
 
         dbUserRepository.findByEmail("validMail@mail.fr")

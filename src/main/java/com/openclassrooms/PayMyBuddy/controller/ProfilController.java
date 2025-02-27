@@ -1,9 +1,8 @@
 package com.openclassrooms.PayMyBuddy.controller;
 
-import com.openclassrooms.PayMyBuddy.exceptions.UserNotFoundException;
 import com.openclassrooms.PayMyBuddy.exceptions.UserWithSameEmailExistsException;
 import com.openclassrooms.PayMyBuddy.exceptions.UserWithSameUserNameExistsException;
-import com.openclassrooms.PayMyBuddy.model.dto.UserDto;
+import com.openclassrooms.PayMyBuddy.dto.UserDto;
 import com.openclassrooms.PayMyBuddy.service.IDBUserService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -89,15 +88,10 @@ public class ProfilController {
                     e.getMessage()
             ));
             return "profil";
-        } catch (UserNotFoundException e) {
-            // TODO : comment déconnecté le user
-            log.error("====> Error in /profil form Disconnect user  : {} <====", e.getMessage());
-            return "profil";
         }
 
-        log.info("====> Profil is updated <====");
-
-        return "redirect:/profil?success";
+        log.info("====> Profil is updated and user logout <====");
+        return "redirect:/logout";
     }
 
 

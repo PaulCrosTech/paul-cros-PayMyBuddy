@@ -5,13 +5,11 @@ import com.openclassrooms.PayMyBuddy.exceptions.UserRelationException;
 import com.openclassrooms.PayMyBuddy.exceptions.UserWithSameEmailExistsException;
 import com.openclassrooms.PayMyBuddy.exceptions.UserWithSameUserNameExistsException;
 import com.openclassrooms.PayMyBuddy.mapper.UserMapper;
-import com.openclassrooms.PayMyBuddy.model.DBUser;
-import com.openclassrooms.PayMyBuddy.model.dto.UserDto;
+import com.openclassrooms.PayMyBuddy.entity.DBUser;
+import com.openclassrooms.PayMyBuddy.dto.UserDto;
 import com.openclassrooms.PayMyBuddy.repository.DBUserRepository;
-import com.openclassrooms.PayMyBuddy.security.service.SecurityService;
 import com.openclassrooms.PayMyBuddy.service.IDBUserService;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.Hibernate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,7 +26,6 @@ public class DBUserService implements IDBUserService {
 
     private final DBUserRepository dbUserRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
-    private final SecurityService securityService;
     private final UserMapper userMapper;
 
     /**
@@ -38,12 +35,10 @@ public class DBUserService implements IDBUserService {
      */
     public DBUserService(DBUserRepository dbUserRepository,
                          BCryptPasswordEncoder bCryptPasswordEncoder,
-                         SecurityService securityService,
                          UserMapper userMapper) {
         this.dbUserRepository = dbUserRepository;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
         this.userMapper = userMapper;
-        this.securityService = securityService;
     }
 
 
@@ -114,7 +109,6 @@ public class DBUserService implements IDBUserService {
     @Override
     public void updateUser(String userEmail, UserDto userDto) throws UserWithSameEmailExistsException, UserWithSameUserNameExistsException, UserNotFoundException {
 
-
         DBUser currentDbUser = dbUserRepository.findByEmail(userEmail)
                 .orElseThrow(() -> new UserNotFoundException("Utilisateur non trouvé avec l'email : " + userEmail));
 
@@ -133,8 +127,6 @@ public class DBUserService implements IDBUserService {
         currentDbUser.setEmail(userDto.getEmail());
         currentDbUser.setPassword(bCryptPasswordEncoder.encode(userDto.getPassword()));
         dbUserRepository.save(currentDbUser);
-
-        securityService.reauthenticateUser(currentDbUser.getEmail());
     }
 
 
@@ -166,7 +158,6 @@ public class DBUserService implements IDBUserService {
         log.debug("====> Friend found : {} <====", dbFriend);
 
 
-        Hibernate.initialize(dbUser.getConnections());
         List<DBUser> connections = dbUser.getConnections();
         connections.stream()
                 .filter(c -> c.getUserId() == dbFriend.getUserId())
@@ -177,6 +168,22 @@ public class DBUserService implements IDBUserService {
                 });
 
         dbUser.getConnections().add(dbFriend);
+    }
+
+    /**
+     * Get all connections of a user
+     *
+     * @param userEmail the user email
+     * @return the list of connections
+     * @throws UserNotFoundException the user not found exception
+     */
+    @Override
+    public List<DBUser> getConnections(String userEmail) throws UserNotFoundException {
+
+        DBUser dbUser = dbUserRepository.findByEmail(userEmail)
+                .orElseThrow(() -> new UserNotFoundException("Utilisateur non trouvé avec l'email : " + userEmail));
+
+        return dbUser.getConnections();
     }
 
     /**

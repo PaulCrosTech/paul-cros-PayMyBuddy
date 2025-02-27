@@ -1,7 +1,7 @@
 package com.openclassrooms.PayMyBuddy.integration.controller;
 
 import com.openclassrooms.PayMyBuddy.integration.config.AbstractContainerDB;
-import com.openclassrooms.PayMyBuddy.model.DBUser;
+import com.openclassrooms.PayMyBuddy.entity.DBUser;
 import com.openclassrooms.PayMyBuddy.repository.DBUserRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

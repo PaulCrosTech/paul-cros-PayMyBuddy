@@ -1,17 +1,17 @@
 package com.openclassrooms.PayMyBuddy.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
  * Controller for the login page.
  */
 @Slf4j
 @Controller
-@RequestMapping(path = "/login")
 public class LoginController {
 
     /**
@@ -19,7 +19,7 @@ public class LoginController {
      *
      * @return the login page.
      */
-    @GetMapping
+    @GetMapping(path = "/login")
     public String login(Model model) {
         log.info("====> GET /login page <====");
 
@@ -28,4 +28,16 @@ public class LoginController {
         return "login";
     }
 
+    /**
+     * Logout the user.
+     *
+     * @param request the request
+     */
+    @GetMapping(path = "/logout")
+    public void logout(HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        if (session != null) {
+            session.invalidate();
+        }
+    }
 }

@@ -1,6 +1,6 @@
 package com.openclassrooms.PayMyBuddy.security.service;
 
-import com.openclassrooms.PayMyBuddy.model.DBUser;
+import com.openclassrooms.PayMyBuddy.entity.DBUser;
 import com.openclassrooms.PayMyBuddy.repository.DBUserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.User;

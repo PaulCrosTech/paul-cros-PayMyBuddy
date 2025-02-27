@@ -1,7 +1,7 @@
 package com.openclassrooms.PayMyBuddy.mapper;
 
-import com.openclassrooms.PayMyBuddy.model.DBUser;
-import com.openclassrooms.PayMyBuddy.model.dto.UserDto;
+import com.openclassrooms.PayMyBuddy.entity.DBUser;
+import com.openclassrooms.PayMyBuddy.dto.UserDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
