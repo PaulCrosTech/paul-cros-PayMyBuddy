@@ -30,4 +30,5 @@ public class Transaction {
     )
     @JoinColumn(name = "user_id_receiver")
     private DBUser receiver;
+
 }

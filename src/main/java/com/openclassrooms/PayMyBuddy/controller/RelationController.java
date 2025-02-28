@@ -1,6 +1,6 @@
 package com.openclassrooms.PayMyBuddy.controller;
 
-import com.openclassrooms.PayMyBuddy.dto.RelationsFormDto;
+import com.openclassrooms.PayMyBuddy.dto.RelationDto;
 import com.openclassrooms.PayMyBuddy.exceptions.UserNotFoundException;
 import com.openclassrooms.PayMyBuddy.exceptions.UserRelationException;
 import com.openclassrooms.PayMyBuddy.repository.DBUserRepository;
@@ -16,50 +16,50 @@ import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @Controller
-@RequestMapping(path = "/relations")
-public class RelationsController {
+@RequestMapping(path = "/relation")
+public class RelationController {
 
     private final IDBUserService userService;
 
-    public RelationsController(IDBUserService userService, DBUserRepository dbUserRepository) {
+    public RelationController(IDBUserService userService, DBUserRepository dbUserRepository) {
         this.userService = userService;
     }
 
 
     @GetMapping
     public String relations(Model model) {
-        log.info("====> GET /relations page <====");
+        log.info("====> GET /relation page <====");
 
         model.addAttribute("highlightRelations", true);
-        model.addAttribute("relationsFormDto", new RelationsFormDto());
+        model.addAttribute("relationDto", new RelationDto());
 
 
-        return "relations";
+        return "relation";
     }
 
 
     @PostMapping
-    public String relations(@Valid @ModelAttribute RelationsFormDto relationsFormDto,
+    public String relations(@Valid @ModelAttribute RelationDto relationDto,
                             BindingResult bindingResult, Model model,
                             @AuthenticationPrincipal User user) {
 
-        log.info("====> POST /relations page {} <====", relationsFormDto.getEmail());
+        log.info("====> POST /relation page {} <====", relationDto.getEmail());
         model.addAttribute("highlightRelations", true);
 
         if (bindingResult.hasErrors()) {
             log.info("====> Email bad format <====");
-            return "relations";
+            return "relation";
         }
 
         try {
-            userService.addRelation(user.getUsername(), relationsFormDto.getEmail());
+            userService.addRelation(user.getUsername(), relationDto.getEmail());
         } catch (UserNotFoundException | UserRelationException e) {
             log.debug("====> Error creating relation : {} <====", e.getMessage());
             model.addAttribute("error", e.getMessage());
-            return "relations";
+            return "relation";
         }
 
         log.info("====> Relations added <====");
-        return "redirect:/relations?success";
+        return "redirect:/relation?success";
     }
 }

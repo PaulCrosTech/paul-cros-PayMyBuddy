@@ -4,7 +4,7 @@ import com.openclassrooms.PayMyBuddy.validators.annotations.ValidEmail;
 import lombok.Data;
 
 @Data
-public class RelationsFormDto {
+public class RelationDto {
 
     @ValidEmail
     private String email;

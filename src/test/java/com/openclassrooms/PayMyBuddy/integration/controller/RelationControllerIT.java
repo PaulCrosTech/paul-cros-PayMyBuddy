@@ -13,7 +13,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * Integration tests for ProfilController
  */
 @WithMockUser(username = "alice@mail.fr")
-public class RelationsControllerIT extends AbstractContainerDB {
+public class RelationControllerIT extends AbstractContainerDB {
 
 
     /**
@@ -24,7 +24,7 @@ public class RelationsControllerIT extends AbstractContainerDB {
     @Test
     public void givenAuthenticatedUser_whenAccessToRelationsPage_thenReturnRelationsPage() throws Exception {
 
-        mockMvc.perform(get("/relations"))
+        mockMvc.perform(get("/relation"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("relations"));
     }
