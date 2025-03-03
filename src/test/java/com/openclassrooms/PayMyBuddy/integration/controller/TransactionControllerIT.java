@@ -17,16 +17,16 @@ public class TransactionControllerIT extends AbstractContainerDB {
 
 
     /**
-     * Test of transfer page
+     * Test of transaction page
      *
      * @throws Exception exception
      */
     @Test
-    public void givenAuthenticatedUser_whenAccessToTransferPage_thenReturnTransferPage() throws Exception {
+    public void givenAuthenticatedUser_whenAccessToTransactionPage_thenReturnTransactionPage() throws Exception {
 
-        mockMvc.perform(get("/transfer"))
+        mockMvc.perform(get("/transaction"))
                 .andExpect(status().isOk())
-                .andExpect(view().name("transfer"));
+                .andExpect(view().name("transaction"));
     }
 
 

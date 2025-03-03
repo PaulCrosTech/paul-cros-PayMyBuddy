@@ -52,14 +52,6 @@ public class TransactionController {
         log.info("====> GET /transaction page <====");
         setupModel(model, new TransactionDto(), user, page, pageSize);
 
-        // TODO : revoir les DTO entre dto de formulaire et dto d'entity bref y a un truc qui va pas
-
-        // TODO : faire les tests unitaires de partout ... youpi y'en a bcp
-
-        // TODO : modifier le script d'init de la base de données pour rajouter bcp de transactions (cf HS software apparement  y a une fonctionnalité)
-        // TODO : l'entity faudra aussi la modifier pour qu'elle crée automatiquement la base de données !
-
-
         return "transaction";
     }
 

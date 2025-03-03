@@ -45,7 +45,7 @@ public class LoginControllerIT extends AbstractContainerDB {
                         .param("password", "Password@1")
                         .with(csrf().asHeader()))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/transfer"));
+                .andExpect(redirectedUrl("/transaction"));
     }
 
     /**

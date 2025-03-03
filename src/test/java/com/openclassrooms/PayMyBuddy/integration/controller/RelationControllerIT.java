@@ -26,7 +26,7 @@ public class RelationControllerIT extends AbstractContainerDB {
 
         mockMvc.perform(get("/relation"))
                 .andExpect(status().isOk())
-                .andExpect(view().name("relations"));
+                .andExpect(view().name("relation"));
     }
 
 }
