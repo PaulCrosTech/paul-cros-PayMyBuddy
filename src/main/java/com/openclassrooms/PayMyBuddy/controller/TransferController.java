@@ -3,6 +3,7 @@ package com.openclassrooms.PayMyBuddy.controller;
 import com.openclassrooms.PayMyBuddy.dto.TransactionWithDebitCreditDto;
 import com.openclassrooms.PayMyBuddy.dto.TransferDto;
 import com.openclassrooms.PayMyBuddy.entity.DBUser;
+import com.openclassrooms.PayMyBuddy.exceptions.TransactionInsufficientBalanceException;
 import com.openclassrooms.PayMyBuddy.service.IDBUserService;
 import com.openclassrooms.PayMyBuddy.service.ITransactionService;
 import jakarta.validation.Valid;
@@ -47,19 +48,17 @@ public class TransferController {
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(required = false) Integer pageSize,
             @AuthenticationPrincipal User user) {
-        log.info("====> GET /transfer page <====");
-        setupModel(model, user, page, pageSize);
 
-        // TODO : prévoir le cas où il n y pas de transactions, \
-        //  Gérer le formulaire Et très certainement revoir le DTO ca ne va pas je pense.
+        log.info("====> GET /transfer page <====");
+        setupModel(model, new TransferDto(), user, page, pageSize);
+
+        // TODO : revoir les DTO entre dto de formulaire et dto d'entity bref y a un truc qui va pas
+        // TODO : revoir le nommage parfois je dis transfer parfois transaction
 
         // TODO : faire les tests unitaires de partout ... youpi y'en a bcp
 
         // TODO : modifier le script d'init de la base de données pour rajouter bcp de transactions (cf HS software apparement  y a une fonctionnalité)
         // TODO : l'entity faudra aussi la modifier pour qu'elle crée automatiquement la base de données !
-
-
-        // TODO : faire de tout ce basard une méthode privée du controller ?
 
 
         return "transfer";
@@ -73,14 +72,32 @@ public class TransferController {
      * @return the transfer page.
      */
     @PostMapping
-    public String transfer(@Valid @ModelAttribute TransferDto transferDto,
-                           @RequestParam(defaultValue = "1") int page,
-                           @RequestParam(required = false) Integer pageSize,
-                           BindingResult bindingResult, Model model,
-                           @AuthenticationPrincipal User user) {
-        log.info("====> POST /transfer page <====");
-        setupModel(model, user, page, pageSize);
+    public String transfer(
+            Model model,
+            @Valid @ModelAttribute TransferDto transferDto,
+            BindingResult bindingResult,
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(required = false) Integer pageSize,
+            @AuthenticationPrincipal User user) {
 
+        log.info("====> POST /transfer page <====");
+        setupModel(model, transferDto, user, page, pageSize);
+
+        if (bindingResult.hasErrors()) {
+            log.debug("====> Error in transaction form <====");
+            log.debug(bindingResult.getAllErrors().toString());
+            return "transfer";
+        }
+
+        try {
+            transactionService.save(user.getUsername(), transferDto);
+        } catch (TransactionInsufficientBalanceException e) {
+
+            log.error("====> Error in transaction form : {} <====", e.getMessage());
+            model.addAttribute("savingTransferError", e.getMessage());
+            setupModel(model, transferDto, user, page, pageSize);
+            return "transfer";
+        }
 
         log.info("====> Transfer done <====");
         return "redirect:/transfer?success";
@@ -94,22 +111,21 @@ public class TransferController {
      * @param page     the parameter page number.
      * @param pageSize the parameter page size.
      */
-    private void setupModel(Model model, User user, int page, Integer pageSize) {
+    private void setupModel(Model model, TransferDto transferDto, User user, int page, Integer pageSize) {
 
         if (pageSize == null) {
             pageSize = TRANSACTIONS_PER_PAGE.getFirst();
         }
 
-        TransferDto transferDto = new TransferDto();
+        model.addAttribute("transferDto", transferDto);
+
         List<DBUser> connections = userService.getConnections(user.getUsername());
-        transferDto.setConnections(connections);
+        model.addAttribute("connections", connections);
 
         Pageable pageable = Pageable.ofSize(pageSize).withPage(page - 1);
         Page<TransactionWithDebitCreditDto> transactions = transactionService.findAsSendOrReceiverByEmail(user.getUsername(), pageable);
-        transferDto.setTransactions(transactions.getContent());
 
-        model.addAttribute("transferDto", transferDto);
-
+        model.addAttribute("transactions", transactions.getContent());
         model.addAttribute("currentPage", transactions.getNumber() + 1);
         model.addAttribute("totalItems", transactions.getTotalElements());
         model.addAttribute("totalPages", transactions.getTotalPages());

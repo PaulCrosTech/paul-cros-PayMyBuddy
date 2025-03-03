@@ -1,8 +1,10 @@
 package com.openclassrooms.PayMyBuddy.service.impl;
 
+import com.openclassrooms.PayMyBuddy.dto.TransferDto;
 import com.openclassrooms.PayMyBuddy.entity.DBUser;
 import com.openclassrooms.PayMyBuddy.entity.Transaction;
 import com.openclassrooms.PayMyBuddy.dto.TransactionWithDebitCreditDto;
+import com.openclassrooms.PayMyBuddy.exceptions.TransactionInsufficientBalanceException;
 import com.openclassrooms.PayMyBuddy.exceptions.UserNotFoundException;
 import com.openclassrooms.PayMyBuddy.mapper.TransactionMapper;
 import com.openclassrooms.PayMyBuddy.repository.DBUserRepository;
@@ -13,6 +15,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -38,7 +41,7 @@ public class TransactionService implements ITransactionService {
 
 
     /**
-     * Find Transactions (as sender or receiver) by email
+     * Find Transactions (as sender or receiver) by email, last transactions first
      *
      * @param email    the email
      * @param pageable the pageable
@@ -52,7 +55,7 @@ public class TransactionService implements ITransactionService {
                 .orElseThrow(
                         () -> new UserNotFoundException("Utilisateur non trouvé avec l'email : " + email)
                 );
-        Page<Transaction> transactions = transactionRepository.findBySender_UserIdOrReceiver_UserId(user.getUserId(), user.getUserId(), pageable);
+        Page<Transaction> transactions = transactionRepository.findBySender_UserIdOrReceiver_UserId_OrderByTransactionIdDesc(user.getUserId(), user.getUserId(), pageable);
 
         List<TransactionWithDebitCreditDto> dto = transactions.stream()
                 .map(transaction -> transactionMapper.toTransactionWithDebitCredit(user.getUserId(), transaction))
@@ -60,5 +63,46 @@ public class TransactionService implements ITransactionService {
 
         return new PageImpl<>(dto, pageable, transactions.getTotalElements());
     }
+
+
+    /**
+     * Save transaction
+     *
+     * @param debtorEmail the debtor email
+     * @param transferDto the transfer dto
+     * @throws UserNotFoundException                   the user not found exception
+     * @throws TransactionInsufficientBalanceException the transaction insufficient balance exception
+     */
+    @Override
+    @Transactional
+    public void save(String debtorEmail, TransferDto transferDto) throws UserNotFoundException, TransactionInsufficientBalanceException {
+
+        log.info("====> Save transaction <====");
+        DBUser debtorUser = userRepository.findByEmail(debtorEmail)
+                .orElseThrow(
+                        () -> new UserNotFoundException("Utilisateur non trouvé avec l'email : " + debtorEmail)
+                );
+
+        DBUser creditorUser = userRepository.findByUserId(transferDto.getUserId())
+                .orElseThrow(
+                        () -> new UserNotFoundException("Utilisateur créditeur non trouvé")
+                );
+
+        if (debtorUser.getSolde() < transferDto.getAmount()) {
+            throw new TransactionInsufficientBalanceException(debtorUser.getUserName(), debtorUser.getSolde(), transferDto.getAmount());
+        }
+
+        debtorUser.setSolde(debtorUser.getSolde() - transferDto.getAmount());
+
+        creditorUser.setSolde(creditorUser.getSolde() + transferDto.getAmount());
+
+        Transaction transaction = new Transaction();
+        transaction.setDescription(transferDto.getDescription());
+        transaction.setAmount(transferDto.getAmount());
+        transaction.setSender(debtorUser);
+        transaction.setReceiver(creditorUser);
+        transactionRepository.save(transaction);
+    }
+
 
 }

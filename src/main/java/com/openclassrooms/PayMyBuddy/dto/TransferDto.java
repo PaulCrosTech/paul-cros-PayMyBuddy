@@ -1,9 +1,9 @@
 package com.openclassrooms.PayMyBuddy.dto;
 
-import com.openclassrooms.PayMyBuddy.entity.DBUser;
+import com.openclassrooms.PayMyBuddy.validators.annotations.ValidDescription;
+import jakarta.validation.constraints.Positive;
 import lombok.Data;
 
-import java.util.List;
 
 /**
  * DTO for the transfer page.
@@ -11,9 +11,13 @@ import java.util.List;
 @Data
 public class TransferDto {
 
-    private List<DBUser> connections;
+    @Positive(message = "Veuillez sélectionner une relation.")
+    private int userId;
+
+    @ValidDescription
     private String description;
+
+    @Positive(message = "Veuillez saisir un montant positif.")
     private double amount;
 
-    List<TransactionWithDebitCreditDto> transactions;
 }

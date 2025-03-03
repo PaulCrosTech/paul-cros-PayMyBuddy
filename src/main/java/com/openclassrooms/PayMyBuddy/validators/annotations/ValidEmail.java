@@ -7,6 +7,9 @@ import jakarta.validation.constraints.NotEmpty;
 
 import java.lang.annotation.*;
 
+/**
+ * ValidEmail Annotation
+ */
 @Constraint(validatedBy = {})
 @NotEmpty(message = "L''email est obligatoire.")
 @Email(message = "L''email n''est pas valide.")

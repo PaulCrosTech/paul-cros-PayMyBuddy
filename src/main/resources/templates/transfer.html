@@ -13,9 +13,9 @@
         </div>
     </div>
 
-    <div class="row mt-3" th:if="${error}">
+    <div class="row mt-3" th:if="${savingTransferError}">
         <div class="col-6 mx-auto">
-            <div class="alert alert-danger text-center" role="alert" th:text="${error}">
+            <div class="alert alert-danger text-center" role="alert" th:text="${savingTransferError}">
             </div>
         </div>
     </div>
@@ -26,27 +26,41 @@
 
 
                 <div class="col">
-                    <select class="form-select" id="connections" name="connections">
-                        <option disabled selected>Sélectionner une relation</option>
-                        <option th:each="connection : ${transferDto.connections}"
-                                th:value="${connection.userId}"
-                                th:text="${connection.userName}"></option>
-                    </select>
+                    <div class="form-group">
+                        <select class="form-select form-control" id="userId" th:field="*{userId}"
+                                th:classappend="${#fields.hasErrors('userId')} ? 'is-invalid' : ''"
+                                aria-describedby="userIdFeedback">
+                            <option value="0" disabled selected>Sélectionner une relation</option>
+                            <option th:each="connection : ${connections}"
+                                    th:value="${connection.userId}"
+                                    th:text="${connection.userName}"></option>
+                        </select>
+                        <div id="userIdFeedback"
+                             th:classappend="${#fields.hasErrors('userId')} ? 'invalid-feedback'"
+                             th:errors="*{userId}"></div>
+                    </div>
                 </div>
 
                 <div class="col">
-                    <input type="text" id="description" th:field="*{description}" class="form-control"
-                           th:classappend="${#fields.hasErrors('description')} ? 'is-invalid' : (${#fields.hasAnyErrors()} ? 'is-valid' : '')"
-                           aria-describedby="descriptionFeedback" placeholder="Description">
-                    <div id="descriptionFeedback"
-                         th:classappend="${#fields.hasErrors('description')} ? 'invalid-feedback'"
-                         th:errors="*{description}"></div>
+                    <div class="form-group">
+                        <input type="text" id="description" th:field="*{description}" class="form-control"
+                               th:classappend="${#fields.hasErrors('description')} ? 'is-invalid' : (${#fields.hasAnyErrors()} ? 'is-valid' : '')"
+                               aria-describedby="descriptionFeedback" placeholder="Description">
+                        <div id="descriptionFeedback"
+                             th:classappend="${#fields.hasErrors('description')} ? 'invalid-feedback'"
+                             th:errors="*{description}"></div>
+                    </div>
                 </div>
 
                 <div class="col">
-                    <input type="number" id="amount" th:field="*{amount}" class="form-control"
-                           th:classappend="${#fields.hasErrors('amount')} ? 'is-invalid' : (${#fields.hasAnyErrors()} ? 'is-valid' : '')"
-                           min="1">
+                    <div class="form-group">
+                        <input type="number" id="amount" th:field="*{amount}" class="form-control"
+                               th:classappend="${#fields.hasErrors('amount')} ? 'is-invalid' : (${#fields.hasAnyErrors()} ? 'is-valid' : '')"
+                               aria-describedby="amountFeedback">
+                        <div id="amountFeedback"
+                             th:classappend="${#fields.hasErrors('amount')} ? 'invalid-feedback'"
+                             th:errors="*{amount}"></div>
+                    </div>
                 </div>
 
                 <div class="col">
@@ -59,20 +73,20 @@
         </form>
         <div class="row mt-5 border">
 
-            <table class="table caption-top">
+            <table class="table table-hover caption-top">
                 <caption><strong>Mes transactions</strong></caption>
                 <thead>
                 <tr>
                     <th scope="col">Relation</th>
                     <th scope="col">Description</th>
-                    <th scope="col">Montant</th>
+                    <th class="text-end" scope="col">Montant</th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="transaction : ${transferDto.getTransactions()}">
+                <tr th:each="transaction : ${transactions}">
                     <td th:text="${transaction.relationUserName}"></td>
                     <td th:text="${transaction.description}"></td>
-                    <td th:classappend="${transaction.debit} ? 'text-danger' : 'text-success'"
+                    <td class="text-end" th:classappend="${transaction.debit} ? 'text-danger' : 'text-success'"
                         th:text="${(transaction.debit)? '- ':'+ '} +  ${#numbers.formatDecimal(transaction.amount,1,'DEFAULT',2,'DEFAULT')} + ' €'"></td>
                 </tr>
                 </tbody>
@@ -84,8 +98,6 @@
                         <label for="pageSize" class="me-1">Transactions / page</label>
                         <select class="form-select form-select-sm" id="pageSize" name="pageSize" style="width: auto;"
                                 onchange="this.form.submit()">
-                            <!--                            <option th:each="s : ${#numbers.sequence(5,20,5)}" th:value="${s}" th:text="${s}"-->
-                            <!--                                    th:selected="${s == pageSize}"></option>-->
                             <option th:each="s : ${transactionPerPage}" th:value="${s}" th:text="${s}"
                                     th:selected="${s == pageSize}"></option>
                         </select>

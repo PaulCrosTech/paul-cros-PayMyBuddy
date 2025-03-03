@@ -13,5 +13,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface TransactionRepository extends JpaRepository<Transaction, Integer> {
 
-    Page<Transaction> findBySender_UserIdOrReceiver_UserId(int senderUserId, int receiverUserId, Pageable pageable);
+    Page<Transaction> findBySender_UserIdOrReceiver_UserId_OrderByTransactionIdDesc(int senderUserId, int receiverUserId, Pageable pageable);
 }
