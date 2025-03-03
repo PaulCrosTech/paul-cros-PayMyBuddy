@@ -18,13 +18,42 @@ COMMIT;
 -- -----------------------------------------------------
 START TRANSACTION;
 USE `paymybuddy`;
-INSERT INTO `paymybuddy`.`transactions` (`transaction_id`, `user_id_sender`, `user_id_receiver`, `description`, `amount`) VALUES (DEFAULT, 1, 2, 'Cadeau', 12);
-INSERT INTO `paymybuddy`.`transactions` (`transaction_id`, `user_id_sender`, `user_id_receiver`, `description`, `amount`) VALUES (DEFAULT, 3, 1, 'Concert', 31);
-INSERT INTO `paymybuddy`.`transactions` (`transaction_id`, `user_id_sender`, `user_id_receiver`, `description`, `amount`) VALUES (DEFAULT, 2, 4, 'Cinéma', 24);
-INSERT INTO `paymybuddy`.`transactions` (`transaction_id`, `user_id_sender`, `user_id_receiver`, `description`, `amount`) VALUES (DEFAULT, 4, 2, 'Restaurant', 42);
-INSERT INTO `paymybuddy`.`transactions` (`transaction_id`, `user_id_sender`, `user_id_receiver`, `description`, `amount`) VALUES (DEFAULT, 1, 2, 'Café', 12.01);
-INSERT INTO `paymybuddy`.`transactions` (`transaction_id`, `user_id_sender`, `user_id_receiver`, `description`, `amount`) VALUES (DEFAULT, 1, 2, 'Transport', 12.02);
-INSERT INTO `paymybuddy`.`transactions` (`transaction_id`, `user_id_sender`, `user_id_receiver`, `description`, `amount`) VALUES (DEFAULT, 2, 1, 'Diner', 21);
+INSERT INTO `paymybuddy`.`transactions` (`user_id_sender`, `user_id_receiver`, `description`, `amount`) VALUES (1, 2, 'Café', 1);
+INSERT INTO `paymybuddy`.`transactions` (`user_id_sender`, `user_id_receiver`, `description`, `amount`) VALUES (1, 2, 'Chocolat', 2);
+INSERT INTO `paymybuddy`.`transactions` (`user_id_sender`, `user_id_receiver`, `description`, `amount`) VALUES (1, 2, 'Biscuit', 3);
+INSERT INTO `paymybuddy`.`transactions` (`user_id_sender`, `user_id_receiver`, `description`, `amount`) VALUES (1, 2, 'Pain', 4);
+INSERT INTO `paymybuddy`.`transactions` (`user_id_sender`, `user_id_receiver`, `description`, `amount`) VALUES (1, 2, 'Croissant', 5);
+INSERT INTO `paymybuddy`.`transactions` (`user_id_sender`, `user_id_receiver`, `description`, `amount`) VALUES (1, 2, 'Jus d''orange', 6);
+INSERT INTO `paymybuddy`.`transactions` (`user_id_sender`, `user_id_receiver`, `description`, `amount`) VALUES (1, 2, 'Lait', 7);
+INSERT INTO `paymybuddy`.`transactions` (`user_id_sender`, `user_id_receiver`, `description`, `amount`) VALUES (1, 2, 'Yaourt', 8);
+INSERT INTO `paymybuddy`.`transactions` (`user_id_sender`, `user_id_receiver`, `description`, `amount`) VALUES (1, 2, 'Miel', 9);
+INSERT INTO `paymybuddy`.`transactions` (`user_id_sender`, `user_id_receiver`, `description`, `amount`) VALUES (1, 2, 'Confiture', 10);
+INSERT INTO `paymybuddy`.`transactions` (`user_id_sender`, `user_id_receiver`, `description`, `amount`) VALUES (1, 2, 'Beurre', 11);
+INSERT INTO `paymybuddy`.`transactions` (`user_id_sender`, `user_id_receiver`, `description`, `amount`) VALUES (1, 2, 'Farine', 12);
+INSERT INTO `paymybuddy`.`transactions` (`user_id_sender`, `user_id_receiver`, `description`, `amount`) VALUES (1, 2, 'Sucre', 13);
+INSERT INTO `paymybuddy`.`transactions` (`user_id_sender`, `user_id_receiver`, `description`, `amount`) VALUES (1, 2, 'Sel', 14);
+INSERT INTO `paymybuddy`.`transactions` (`user_id_sender`, `user_id_receiver`, `description`, `amount`) VALUES (1, 2, 'Poivre', 15);
+INSERT INTO `paymybuddy`.`transactions` (`user_id_sender`, `user_id_receiver`, `description`, `amount`) VALUES (1, 2, 'Huile', 16);
+INSERT INTO `paymybuddy`.`transactions` (`user_id_sender`, `user_id_receiver`, `description`, `amount`) VALUES (1, 2, 'Vinaigre', 17);
+INSERT INTO `paymybuddy`.`transactions` (`user_id_sender`, `user_id_receiver`, `description`, `amount`) VALUES (1, 2, 'Pâtes', 18);
+INSERT INTO `paymybuddy`.`transactions` (`user_id_sender`, `user_id_receiver`, `description`, `amount`) VALUES (1, 2, 'Riz', 19);
+INSERT INTO `paymybuddy`.`transactions` (`user_id_sender`, `user_id_receiver`, `description`, `amount`) VALUES (1, 2, 'Lentilles', 20);
+INSERT INTO `paymybuddy`.`transactions` (`user_id_sender`, `user_id_receiver`, `description`, `amount`) VALUES (1, 2, 'Haricots', 21);
+INSERT INTO `paymybuddy`.`transactions` (`user_id_sender`, `user_id_receiver`, `description`, `amount`) VALUES (1, 2, 'Pois chiches', 22);
+INSERT INTO `paymybuddy`.`transactions` (`user_id_sender`, `user_id_receiver`, `description`, `amount`) VALUES (1, 2, 'Viande', 23);
+INSERT INTO `paymybuddy`.`transactions` (`user_id_sender`, `user_id_receiver`, `description`, `amount`) VALUES (1, 2, 'Poulet', 24);
+INSERT INTO `paymybuddy`.`transactions` (`user_id_sender`, `user_id_receiver`, `description`, `amount`) VALUES (1, 2, 'Poisson', 25);
+INSERT INTO `paymybuddy`.`transactions` (`user_id_sender`, `user_id_receiver`, `description`, `amount`) VALUES (1, 2, 'Œufs', 26);
+INSERT INTO `paymybuddy`.`transactions` (`user_id_sender`, `user_id_receiver`, `description`, `amount`) VALUES (1, 2, 'Tomates', 27);
+INSERT INTO `paymybuddy`.`transactions` (`user_id_sender`, `user_id_receiver`, `description`, `amount`) VALUES (1, 2, 'Salade', 28);
+INSERT INTO `paymybuddy`.`transactions` (`user_id_sender`, `user_id_receiver`, `description`, `amount`) VALUES (1, 2, 'Carottes', 29);
+INSERT INTO `paymybuddy`.`transactions` (`user_id_sender`, `user_id_receiver`, `description`, `amount`) VALUES (1, 2, 'Pommes', 30);
+
+INSERT INTO `paymybuddy`.`transactions` (`user_id_sender`, `user_id_receiver`, `description`, `amount`) VALUES ( 3, 1, 'Concert', 123.45);
+INSERT INTO `paymybuddy`.`transactions` (`user_id_sender`, `user_id_receiver`, `description`, `amount`) VALUES ( 2, 1, 'Diner', 10000.00);
+
+INSERT INTO `paymybuddy`.`transactions` (`user_id_sender`, `user_id_receiver`, `description`, `amount`) VALUES ( 2, 4, 'Cinéma', 54.89);
+INSERT INTO `paymybuddy`.`transactions` (`user_id_sender`, `user_id_receiver`, `description`, `amount`) VALUES ( 4, 2, 'Restaurant', 410.75);
 
 COMMIT;
 

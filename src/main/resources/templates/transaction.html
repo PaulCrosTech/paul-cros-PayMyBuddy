@@ -56,7 +56,7 @@
                     <div class="form-group">
                         <input type="number" id="amount" th:field="*{amount}" class="form-control"
                                th:classappend="${#fields.hasErrors('amount')} ? 'is-invalid' : (${#fields.hasAnyErrors()} ? 'is-valid' : '')"
-                               aria-describedby="amountFeedback">
+                               aria-describedby="amountFeedback" min="0" step="0.01">
                         <div id="amountFeedback"
                              th:classappend="${#fields.hasErrors('amount')} ? 'invalid-feedback'"
                              th:errors="*{amount}"></div>

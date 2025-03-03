@@ -53,7 +53,6 @@ public class TransactionController {
         setupModel(model, new TransactionDto(), user, page, pageSize);
 
         // TODO : revoir les DTO entre dto de formulaire et dto d'entity bref y a un truc qui va pas
-        // TODO : revoir le nommage parfois je dis transaction parfois transaction
 
         // TODO : faire les tests unitaires de partout ... youpi y'en a bcp
 
