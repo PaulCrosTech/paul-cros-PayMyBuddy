@@ -6,10 +6,10 @@ import lombok.Data;
 
 
 /**
- * DTO for the transfer page.
+ * DTO for transaction
  */
 @Data
-public class TransferDto {
+public class TransactionDto {
 
     @Positive(message = "Veuillez sélectionner une relation.")
     private int userId;

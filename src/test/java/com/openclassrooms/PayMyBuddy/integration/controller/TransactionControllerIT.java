@@ -10,10 +10,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 
 /**
- * Integration tests for TransferController
+ * Integration tests for TransactionController
  */
 @WithMockUser(username = "alice@mail.fr")
-public class TransferControllerIT extends AbstractContainerDB {
+public class TransactionControllerIT extends AbstractContainerDB {
 
 
     /**

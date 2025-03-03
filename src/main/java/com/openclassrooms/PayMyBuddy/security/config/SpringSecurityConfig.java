@@ -49,7 +49,7 @@ public class SpringSecurityConfig {
                         form -> form
                                 .loginPage("/login")
                                 .usernameParameter("email")
-                                .defaultSuccessUrl("/transfer", true)
+                                .defaultSuccessUrl("/transaction", true)
                                 .permitAll()
                 )
                 .build();

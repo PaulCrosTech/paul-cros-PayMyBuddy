@@ -5,6 +5,9 @@ import com.openclassrooms.PayMyBuddy.validators.annotations.ValidPassword;
 import com.openclassrooms.PayMyBuddy.validators.annotations.ValidUsername;
 import lombok.Data;
 
+/**
+ * DTO for user
+ */
 @Data
 public class UserDto {
 

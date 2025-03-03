@@ -1,6 +1,6 @@
 package com.openclassrooms.PayMyBuddy.service.impl;
 
-import com.openclassrooms.PayMyBuddy.dto.TransferDto;
+import com.openclassrooms.PayMyBuddy.dto.TransactionDto;
 import com.openclassrooms.PayMyBuddy.entity.DBUser;
 import com.openclassrooms.PayMyBuddy.entity.Transaction;
 import com.openclassrooms.PayMyBuddy.dto.TransactionWithDebitCreditDto;
@@ -68,14 +68,14 @@ public class TransactionService implements ITransactionService {
     /**
      * Save transaction
      *
-     * @param debtorEmail the debtor email
-     * @param transferDto the transfer dto
+     * @param debtorEmail    the debtor email
+     * @param transactionDto the transfer dto
      * @throws UserNotFoundException                   the user not found exception
      * @throws TransactionInsufficientBalanceException the transaction insufficient balance exception
      */
     @Override
     @Transactional
-    public void save(String debtorEmail, TransferDto transferDto) throws UserNotFoundException, TransactionInsufficientBalanceException {
+    public void save(String debtorEmail, TransactionDto transactionDto) throws UserNotFoundException, TransactionInsufficientBalanceException {
 
         log.info("====> Save transaction <====");
         DBUser debtorUser = userRepository.findByEmail(debtorEmail)
@@ -83,22 +83,22 @@ public class TransactionService implements ITransactionService {
                         () -> new UserNotFoundException("Utilisateur non trouvé avec l'email : " + debtorEmail)
                 );
 
-        DBUser creditorUser = userRepository.findByUserId(transferDto.getUserId())
+        DBUser creditorUser = userRepository.findByUserId(transactionDto.getUserId())
                 .orElseThrow(
                         () -> new UserNotFoundException("Utilisateur créditeur non trouvé")
                 );
 
-        if (debtorUser.getSolde() < transferDto.getAmount()) {
-            throw new TransactionInsufficientBalanceException(debtorUser.getUserName(), debtorUser.getSolde(), transferDto.getAmount());
+        if (debtorUser.getSolde() < transactionDto.getAmount()) {
+            throw new TransactionInsufficientBalanceException(debtorUser.getUserName(), debtorUser.getSolde(), transactionDto.getAmount());
         }
 
-        debtorUser.setSolde(debtorUser.getSolde() - transferDto.getAmount());
+        debtorUser.setSolde(debtorUser.getSolde() - transactionDto.getAmount());
 
-        creditorUser.setSolde(creditorUser.getSolde() + transferDto.getAmount());
+        creditorUser.setSolde(creditorUser.getSolde() + transactionDto.getAmount());
 
         Transaction transaction = new Transaction();
-        transaction.setDescription(transferDto.getDescription());
-        transaction.setAmount(transferDto.getAmount());
+        transaction.setDescription(transactionDto.getDescription());
+        transaction.setAmount(transactionDto.getAmount());
         transaction.setSender(debtorUser);
         transaction.setReceiver(creditorUser);
         transactionRepository.save(transaction);

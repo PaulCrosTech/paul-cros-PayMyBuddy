@@ -5,6 +5,9 @@ import com.openclassrooms.PayMyBuddy.dto.UserDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
+/**
+ * User Mapper
+ */
 @Mapper(componentModel = "spring")
 public interface UserMapper {
 

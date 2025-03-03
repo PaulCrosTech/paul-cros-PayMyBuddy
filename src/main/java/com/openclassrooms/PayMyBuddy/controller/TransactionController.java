@@ -1,7 +1,7 @@
 package com.openclassrooms.PayMyBuddy.controller;
 
+import com.openclassrooms.PayMyBuddy.dto.TransactionDto;
 import com.openclassrooms.PayMyBuddy.dto.TransactionWithDebitCreditDto;
-import com.openclassrooms.PayMyBuddy.dto.TransferDto;
 import com.openclassrooms.PayMyBuddy.entity.DBUser;
 import com.openclassrooms.PayMyBuddy.exceptions.TransactionInsufficientBalanceException;
 import com.openclassrooms.PayMyBuddy.service.IDBUserService;
@@ -20,40 +20,40 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 /**
- * Controller for the transfer page.
+ * Controller for the transaction page.
  */
 @Slf4j
 @Controller
-@RequestMapping(path = "/transfer")
-public class TransferController {
+@RequestMapping(path = "/transaction")
+public class TransactionController {
 
     private final IDBUserService userService;
     private final ITransactionService transactionService;
     private static final List<Integer> TRANSACTIONS_PER_PAGE = List.of(5, 10, 15, 20);
 
-    public TransferController(IDBUserService userService,
-                              ITransactionService transactionService) {
+    public TransactionController(IDBUserService userService,
+                                 ITransactionService transactionService) {
         this.userService = userService;
         this.transactionService = transactionService;
     }
 
     /**
-     * Display the transfer page.
+     * Display the transaction page.
      *
-     * @return the transfer page.
+     * @return the transaction page.
      */
     @GetMapping
-    public String transfer(
+    public String transaction(
             Model model,
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(required = false) Integer pageSize,
             @AuthenticationPrincipal User user) {
 
-        log.info("====> GET /transfer page <====");
-        setupModel(model, new TransferDto(), user, page, pageSize);
+        log.info("====> GET /transaction page <====");
+        setupModel(model, new TransactionDto(), user, page, pageSize);
 
         // TODO : revoir les DTO entre dto de formulaire et dto d'entity bref y a un truc qui va pas
-        // TODO : revoir le nommage parfois je dis transfer parfois transaction
+        // TODO : revoir le nommage parfois je dis transaction parfois transaction
 
         // TODO : faire les tests unitaires de partout ... youpi y'en a bcp
 
@@ -61,63 +61,63 @@ public class TransferController {
         // TODO : l'entity faudra aussi la modifier pour qu'elle crée automatiquement la base de données !
 
 
-        return "transfer";
+        return "transaction";
     }
 
     /**
-     * @param transferDto   the transfer form data.
-     * @param bindingResult the binding result.
-     * @param model         the model.
-     * @param user          the authenticated user.
-     * @return the transfer page.
+     * @param transactionDto the transaction form data.
+     * @param bindingResult  the binding result.
+     * @param model          the model.
+     * @param user           the authenticated user.
+     * @return the transaction page.
      */
     @PostMapping
-    public String transfer(
+    public String transaction(
             Model model,
-            @Valid @ModelAttribute TransferDto transferDto,
+            @Valid @ModelAttribute TransactionDto transactionDto,
             BindingResult bindingResult,
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(required = false) Integer pageSize,
             @AuthenticationPrincipal User user) {
 
-        log.info("====> POST /transfer page <====");
-        setupModel(model, transferDto, user, page, pageSize);
+        log.info("====> POST /transaction page <====");
+        setupModel(model, transactionDto, user, page, pageSize);
 
         if (bindingResult.hasErrors()) {
             log.debug("====> Error in transaction form <====");
             log.debug(bindingResult.getAllErrors().toString());
-            return "transfer";
+            return "transaction";
         }
 
         try {
-            transactionService.save(user.getUsername(), transferDto);
+            transactionService.save(user.getUsername(), transactionDto);
         } catch (TransactionInsufficientBalanceException e) {
 
             log.error("====> Error in transaction form : {} <====", e.getMessage());
-            model.addAttribute("savingTransferError", e.getMessage());
-            setupModel(model, transferDto, user, page, pageSize);
-            return "transfer";
+            model.addAttribute("savingTransactionError", e.getMessage());
+            setupModel(model, transactionDto, user, page, pageSize);
+            return "transaction";
         }
 
-        log.info("====> Transfer done <====");
-        return "redirect:/transfer?success";
+        log.info("====> transaction done <====");
+        return "redirect:/transaction?success";
     }
 
     /**
-     * Set up the model with the transfer form data and the transactions.
+     * Set up the model with the transaction form data and the transactions.
      *
      * @param model    the model.
      * @param user     the authenticated user.
      * @param page     the parameter page number.
      * @param pageSize the parameter page size.
      */
-    private void setupModel(Model model, TransferDto transferDto, User user, int page, Integer pageSize) {
+    private void setupModel(Model model, TransactionDto transactionDto, User user, int page, Integer pageSize) {
 
         if (pageSize == null) {
             pageSize = TRANSACTIONS_PER_PAGE.getFirst();
         }
 
-        model.addAttribute("transferDto", transferDto);
+        model.addAttribute("transactionDto", transactionDto);
 
         List<DBUser> connections = userService.getConnections(user.getUsername());
         model.addAttribute("connections", connections);
@@ -132,6 +132,6 @@ public class TransferController {
         model.addAttribute("pageSize", pageSize);
         model.addAttribute("transactionPerPage", TRANSACTIONS_PER_PAGE);
 
-        model.addAttribute("highlightTransfer", true);
+        model.addAttribute("highlightTransaction", true);
     }
 }

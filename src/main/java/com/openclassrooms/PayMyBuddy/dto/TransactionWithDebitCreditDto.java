@@ -3,11 +3,11 @@ package com.openclassrooms.PayMyBuddy.dto;
 import lombok.Data;
 
 /**
- * DTO for the transaction with debit or credit.
+ * DTO for transaction with debit or credit
  */
 @Data
 public class TransactionWithDebitCreditDto {
-    
+
     private String description;
     private String relationUserName;
     private double amount;

@@ -13,5 +13,13 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface TransactionRepository extends JpaRepository<Transaction, Integer> {
 
+    /**
+     * Find all transactions by sender user id or receiver user id order by transaction id desc
+     *
+     * @param senderUserId   the sender user id
+     * @param receiverUserId the receiver user id
+     * @param pageable       the pageable
+     * @return the page list of transactions
+     */
     Page<Transaction> findBySender_UserIdOrReceiver_UserId_OrderByTransactionIdDesc(int senderUserId, int receiverUserId, Pageable pageable);
 }

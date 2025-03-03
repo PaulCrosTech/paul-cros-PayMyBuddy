@@ -2,7 +2,7 @@ package com.openclassrooms.PayMyBuddy.service;
 
 
 import com.openclassrooms.PayMyBuddy.dto.TransactionWithDebitCreditDto;
-import com.openclassrooms.PayMyBuddy.dto.TransferDto;
+import com.openclassrooms.PayMyBuddy.dto.TransactionDto;
 import com.openclassrooms.PayMyBuddy.exceptions.TransactionInsufficientBalanceException;
 import com.openclassrooms.PayMyBuddy.exceptions.UserNotFoundException;
 import org.springframework.data.domain.Page;
@@ -25,10 +25,10 @@ public interface ITransactionService {
     /**
      * Save transaction
      *
-     * @param DebtorEmail the debtor email
-     * @param transferDto the transfer dto
+     * @param DebtorEmail    the debtor email
+     * @param transactionDto the transfer dto
      * @throws UserNotFoundException                   the user not found exception
      * @throws TransactionInsufficientBalanceException the transaction insufficient balance exception
      */
-    void save(String DebtorEmail, TransferDto transferDto) throws UserNotFoundException, TransactionInsufficientBalanceException;
+    void save(String DebtorEmail, TransactionDto transactionDto) throws UserNotFoundException, TransactionInsufficientBalanceException;
 }
