@@ -14,11 +14,16 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class HomeControllerIT extends AbstractContainerDB {
 
 
+    /**
+     * Test of the index method.
+     *
+     * @throws Exception if an error occurs.
+     */
     @Test
     public void given_whenAccessToHomePage_thenReturnHomePage() throws Exception {
         mockMvc.perform(get("/"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("index"));
     }
-    
+
 }
