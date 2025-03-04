@@ -12,11 +12,11 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 
@@ -46,6 +46,7 @@ public class RegisterControllerTest {
         String password = "Password@1";
         String email = "test@test.com";
 
+        doNothing().when(userService).updateUser(anyString(), any(UserDto.class));
 
         // When && Then
         mockMvc.perform(post("/register")
@@ -66,7 +67,7 @@ public class RegisterControllerTest {
      * @throws Exception if an error occurs
      */
     @Test
-    public void givenInvalidInformations_whenRegister_thenReturnRegisterPage() throws Exception {
+    public void givenInvalidInformations_whenRegister_thenReturnRegisterPageWithError() throws Exception {
         // Given
         String username = "test";
         String password = "badpassword";
@@ -93,7 +94,7 @@ public class RegisterControllerTest {
      * @throws Exception if an error occurs
      */
     @Test
-    public void givenUserWithSameEmailExists_whenRegister_thenReturnRegisterPage() throws Exception {
+    public void givenUserWithSameEmailExists_whenRegister_thenReturnRegisterPageWithError() throws Exception {
         // Given
         UserDto userDto = new UserDto();
         userDto.setEmail("test@test.com");
