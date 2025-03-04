@@ -51,8 +51,7 @@ public class SpringSecurityConfig {
                                 .usernameParameter("email")
                                 .defaultSuccessUrl("/transaction", true)
                                 .permitAll()
-                )
-                .build();
+                ).build();
 
     }
 

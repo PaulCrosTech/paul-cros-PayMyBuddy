@@ -1,18 +1,14 @@
 package com.openclassrooms.PayMyBuddy.unit.security;
 
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
@@ -55,7 +51,8 @@ public class PageAccessTest {
     @ParameterizedTest
     @CsvSource({
             "'/', 'index'",
-            "'/register', 'register'"
+            "'/register', 'register'",
+            "'/login', 'login'"
     })
     public void givenUnauthenticatedUser_whenAccessNonSecuredPage_thenReturnPage(String securedPage, String viewName) throws Exception {
         mockMvc.perform(get(securedPage))

@@ -4,6 +4,8 @@ import com.openclassrooms.PayMyBuddy.exceptions.UserWithSameEmailExistsException
 import com.openclassrooms.PayMyBuddy.exceptions.UserWithSameUserNameExistsException;
 import com.openclassrooms.PayMyBuddy.dto.UserDto;
 import com.openclassrooms.PayMyBuddy.service.IDBUserService;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -59,7 +61,7 @@ public class ProfilController {
     public String profil(@Valid @ModelAttribute UserDto userDto,
                          BindingResult bindingResult,
                          Model model,
-                         @AuthenticationPrincipal User user) {
+                         @AuthenticationPrincipal User user, HttpServletRequest httpServletRequest) throws ServletException {
         log.info("====> POST /profil page <====");
         model.addAttribute("highlightProfil", true);
 
@@ -91,7 +93,9 @@ public class ProfilController {
         }
 
         log.info("====> Profil is updated and user logout <====");
-        return "redirect:/logout";
+        httpServletRequest.logout();
+        return "redirect:/login";
+
     }
 
 

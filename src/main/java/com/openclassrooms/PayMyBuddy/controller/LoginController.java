@@ -1,7 +1,5 @@
 package com.openclassrooms.PayMyBuddy.controller;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -26,18 +24,5 @@ public class LoginController {
         model.addAttribute("highlightLogin", true);
 
         return "login";
-    }
-
-    /**
-     * Logout the user.
-     *
-     * @param request the request
-     */
-    @GetMapping(path = "/logout")
-    public void logout(HttpServletRequest request) {
-        HttpSession session = request.getSession(false);
-        if (session != null) {
-            session.invalidate();
-        }
     }
 }

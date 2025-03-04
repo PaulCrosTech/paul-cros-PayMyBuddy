@@ -78,7 +78,7 @@ public class ProfilControllerTest {
                         .param("password", "Password@1")
                         .with(csrf().asHeader()))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/logout"));
+                .andExpect(redirectedUrl("/login"));
     }
 
 
