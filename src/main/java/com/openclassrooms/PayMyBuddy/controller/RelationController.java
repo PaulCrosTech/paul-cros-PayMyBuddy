@@ -3,7 +3,6 @@ package com.openclassrooms.PayMyBuddy.controller;
 import com.openclassrooms.PayMyBuddy.dto.RelationDto;
 import com.openclassrooms.PayMyBuddy.exceptions.UserNotFoundException;
 import com.openclassrooms.PayMyBuddy.exceptions.UserRelationException;
-import com.openclassrooms.PayMyBuddy.repository.DBUserRepository;
 import com.openclassrooms.PayMyBuddy.service.IDBUserService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -21,7 +20,7 @@ public class RelationController {
 
     private final IDBUserService userService;
 
-    public RelationController(IDBUserService userService, DBUserRepository dbUserRepository) {
+    public RelationController(IDBUserService userService) {
         this.userService = userService;
     }
 
