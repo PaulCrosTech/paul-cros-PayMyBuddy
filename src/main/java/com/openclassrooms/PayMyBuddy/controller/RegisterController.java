@@ -35,10 +35,12 @@ public class RegisterController {
         this.userService = userService;
     }
 
+
     /**
      * Display the registration page.
      *
-     * @return the registration page.
+     * @param model the model
+     * @return the registration page
      */
     @GetMapping
     public String register(Model model) {
@@ -48,12 +50,14 @@ public class RegisterController {
         return "register";
     }
 
+
     /**
      * Register a new user.
      *
      * @param userDto       the user to register
      * @param bindingResult the binding result
-     * @return the login page
+     * @param model         the model
+     * @return the registration page
      */
     @PostMapping
     public String register(@Valid @ModelAttribute UserDto userDto, BindingResult bindingResult, Model model) {

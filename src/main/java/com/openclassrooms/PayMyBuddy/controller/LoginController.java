@@ -12,10 +12,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class LoginController {
 
+
     /**
      * Display the login page.
      *
-     * @return the login page.
+     * @param model the model
+     * @return the login page
      */
     @GetMapping(path = "/login")
     public String login(Model model) {

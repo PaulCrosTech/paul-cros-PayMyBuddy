@@ -17,8 +17,10 @@ public interface ITransactionService {
     /**
      * Find Transactions (as sender or receiver) by email, last transactions first
      *
-     * @param email the email
-     * @return the pageable list of TransactionWithDebitCreditDto
+     * @param email    the email
+     * @param pageable the pageable
+     * @return the page
+     * @throws UserNotFoundException the user not found exception
      */
     Page<TransactionWithDebitCreditDto> findAsSendOrReceiverByEmail(String email, Pageable pageable) throws UserNotFoundException;
 

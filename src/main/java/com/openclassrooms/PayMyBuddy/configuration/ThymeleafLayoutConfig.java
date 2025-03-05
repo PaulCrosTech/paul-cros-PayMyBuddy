@@ -10,6 +10,11 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class ThymeleafLayoutConfig {
 
+    /**
+     * Add the layout dialect to the Thymeleaf configuration
+     *
+     * @return the layout dialect
+     */
     @Bean
     public LayoutDialect layoutDialect() {
         return new LayoutDialect();

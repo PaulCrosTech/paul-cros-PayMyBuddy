@@ -28,10 +28,13 @@ public class DBUserService implements IDBUserService {
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final UserMapper userMapper;
 
+
     /**
-     * Constructor
+     * Instantiates a new DBUser service.
      *
-     * @param dbUserRepository the db user repository
+     * @param dbUserRepository      the db user repository
+     * @param bCryptPasswordEncoder the b crypt password encoder
+     * @param userMapper            the user mapper
      */
     public DBUserService(DBUserRepository dbUserRepository,
                          BCryptPasswordEncoder bCryptPasswordEncoder,

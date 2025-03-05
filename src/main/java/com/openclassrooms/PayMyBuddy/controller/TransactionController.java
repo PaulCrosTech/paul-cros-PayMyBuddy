@@ -31,6 +31,12 @@ public class TransactionController {
     private final ITransactionService transactionService;
     private static final List<Integer> TRANSACTIONS_PER_PAGE = List.of(5, 10, 15, 20);
 
+    /**
+     * Constructor.
+     *
+     * @param userService        the user service
+     * @param transactionService the transaction service
+     */
     public TransactionController(IDBUserService userService,
                                  ITransactionService transactionService) {
         this.userService = userService;
@@ -40,7 +46,11 @@ public class TransactionController {
     /**
      * Display the transaction page.
      *
-     * @return the transaction page.
+     * @param model    the model
+     * @param page     the page number
+     * @param pageSize the page size
+     * @param user     the authenticated user
+     * @return the transaction page
      */
     @GetMapping
     public String transaction(
@@ -55,12 +65,17 @@ public class TransactionController {
         return "transaction";
     }
 
+
     /**
-     * @param transactionDto the transaction form data.
-     * @param bindingResult  the binding result.
-     * @param model          the model.
-     * @param user           the authenticated user.
-     * @return the transaction page.
+     * Create a transaction.
+     *
+     * @param model          the model
+     * @param transactionDto the transaction to create
+     * @param bindingResult  the binding result
+     * @param page           the page number
+     * @param pageSize       the page size
+     * @param user           the authenticated user
+     * @return the transaction page
      */
     @PostMapping
     public String transaction(

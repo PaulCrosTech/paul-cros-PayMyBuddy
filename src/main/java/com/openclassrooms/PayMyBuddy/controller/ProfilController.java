@@ -29,14 +29,21 @@ public class ProfilController {
 
     private final IDBUserService userService;
 
+    /**
+     * Constructor.
+     *
+     * @param userService the user service
+     */
     public ProfilController(IDBUserService userService) {
         this.userService = userService;
     }
 
     /**
-     * Display the transfer page.
+     * Display the profil page.
      *
-     * @return the transfer page.
+     * @param model the model
+     * @param user  the user
+     * @return the profil page
      */
     @GetMapping
     public String profil(Model model, @AuthenticationPrincipal User user) {
@@ -52,10 +59,13 @@ public class ProfilController {
     /**
      * Update the user profil.
      *
-     * @param userDto       the user to update
-     * @param bindingResult the binding result
-     * @param model         the model
-     * @return the profil page
+     * @param userDto            the user to update
+     * @param bindingResult      the binding result
+     * @param model              the model
+     * @param user               the user
+     * @param httpServletRequest the http servlet request
+     * @return the login page
+     * @throws ServletException if an error occurs
      */
     @PostMapping
     public String profil(@Valid @ModelAttribute UserDto userDto,

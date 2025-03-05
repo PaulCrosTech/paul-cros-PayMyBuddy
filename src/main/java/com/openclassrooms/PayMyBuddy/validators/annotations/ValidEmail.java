@@ -18,9 +18,24 @@ import java.lang.annotation.*;
 @Documented
 public @interface ValidEmail {
 
+    /**
+     * Message
+     *
+     * @return the message
+     */
     String message() default "L''email est obligatoire et doit être valide.";
 
+    /**
+     * Groups
+     *
+     * @return the groups
+     */
     Class<?>[] groups() default {};
 
+    /**
+     * Payload
+     *
+     * @return the payload
+     */
     Class<? extends Payload>[] payload() default {};
 }

@@ -11,9 +11,14 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class PayMyBuddyApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(PayMyBuddyApplication.class, args);
-		log.info("====> Application PayMyBuddy started <====");
-	}
+    /**
+     * Main method.
+     *
+     * @param args the arguments
+     */
+    public static void main(String[] args) {
+        SpringApplication.run(PayMyBuddyApplication.class, args);
+        log.info("====> Application PayMyBuddy started <====");
+    }
 
 }

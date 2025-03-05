@@ -13,6 +13,9 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * Controller for the relation page.
+ */
 @Slf4j
 @Controller
 @RequestMapping(path = "/relation")
@@ -20,11 +23,21 @@ public class RelationController {
 
     private final IDBUserService userService;
 
+    /**
+     * Constructor.
+     *
+     * @param userService the user service
+     */
     public RelationController(IDBUserService userService) {
         this.userService = userService;
     }
 
-
+    /**
+     * Display the relation page.
+     *
+     * @param model the model
+     * @return the relation page.
+     */
     @GetMapping
     public String relations(Model model) {
         log.info("====> GET /relation : page <====");
@@ -34,6 +47,15 @@ public class RelationController {
     }
 
 
+    /**
+     * Add a relation to the user.
+     *
+     * @param relationDto   the relation to add
+     * @param bindingResult the binding result
+     * @param model         the model
+     * @param user          the user
+     * @return the relation page
+     */
     @PostMapping
     public String relations(@Valid @ModelAttribute RelationDto relationDto,
                             BindingResult bindingResult, Model model,

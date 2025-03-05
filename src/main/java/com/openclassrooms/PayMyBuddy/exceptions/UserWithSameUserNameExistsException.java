@@ -8,6 +8,12 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 public class UserWithSameUserNameExistsException extends RuntimeException {
+
+    /**
+     * Constructor
+     *
+     * @param userName (String) : User name
+     */
     public UserWithSameUserNameExistsException(String userName) {
         super("A user with username '" + userName + "' already exists.");
         log.error("====> <exception> UserWithSameUserNameExistsException : {} <====", userName);

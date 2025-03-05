@@ -8,6 +8,12 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 public class UserWithSameEmailExistsException extends RuntimeException {
+
+    /**
+     * Constructor
+     *
+     * @param email (String) : Email of the user
+     */
     public UserWithSameEmailExistsException(String email) {
         super("A user with email '" + email + "' already exists.");
         log.error("====> <exception> UserWithSameEmailExistsException : {} <====", email);

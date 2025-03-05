@@ -31,6 +31,13 @@ public class TransactionService implements ITransactionService {
     private final DBUserRepository userRepository;
     private final TransactionMapper transactionMapper;
 
+    /**
+     * Constructor
+     *
+     * @param transactionRepository the transaction repository
+     * @param userRepository        the user repository
+     * @param transactionMapper     the transaction mapper
+     */
     public TransactionService(TransactionRepository transactionRepository,
                               DBUserRepository userRepository,
                               TransactionMapper transactionMapper) {
