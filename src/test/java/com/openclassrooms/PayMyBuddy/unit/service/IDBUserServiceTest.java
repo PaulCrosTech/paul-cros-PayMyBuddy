@@ -1,6 +1,7 @@
 package com.openclassrooms.PayMyBuddy.unit.service;
 
 import com.openclassrooms.PayMyBuddy.exceptions.UserNotFoundException;
+import com.openclassrooms.PayMyBuddy.exceptions.UserRelationException;
 import com.openclassrooms.PayMyBuddy.exceptions.UserWithSameEmailExistsException;
 import com.openclassrooms.PayMyBuddy.exceptions.UserWithSameUserNameExistsException;
 import com.openclassrooms.PayMyBuddy.mapper.UserMapper;
@@ -16,6 +17,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -352,6 +355,177 @@ public class IDBUserServiceTest {
         // When & Then
         assertThrows(UserWithSameUserNameExistsException.class, () -> userService.updateUser(currentDbUser.getEmail(), userDto));
         verify(dbUserRepository, never()).save(any(DBUser.class));
+    }
+
+
+    /**
+     * Testing method addRelation
+     * - Given valid informations
+     * - When addRelation
+     * - Then relation is added
+     */
+    @Test
+    public void givenValidInformations_whenAddRelation_thenRelationIsAdded() {
+        // Given
+        String userEmail = "user@mail.fr";
+        String friendEmail = "friend@mail.fr";
+
+        when(dbUserRepository.findByEmail(userEmail)).thenReturn(Optional.of(new DBUser()));
+        when(dbUserRepository.findByEmail(friendEmail)).thenReturn(Optional.of(new DBUser()));
+
+        // When
+        userService.addRelation(userEmail, friendEmail);
+
+        // Then
+        verify(dbUserRepository, times(1)).findByEmail(userEmail);
+        verify(dbUserRepository, times(1)).findByEmail(friendEmail);
+    }
+
+    /**
+     * Testing method addRelation
+     * - Given same user and friend email
+     * - When addRelation
+     * - Then throw UserNotFoundException
+     */
+    @Test
+    public void givenSameFriendUserEmail_whenAddRelation_thenThrowUserRelationException() {
+        // Given
+        String userEmail = "user@mail.fr";
+        String friendEmail = "user@mail.fr";
+
+        // When & Then
+        assertThrows(
+                UserRelationException.class,
+                () -> userService.addRelation(userEmail, friendEmail)
+        );
+    }
+
+    /**
+     * Testing method addRelation
+     * - Given unknown user email
+     * - When addRelation
+     * - Then throw UserNotFoundException
+     */
+    @Test
+    public void givenUnknownUserEmail_whenAddRelation_thenThrowUserNotFoundException() {
+        // Given
+        String userEmail = "unknow@mail.fr";
+        String friendEmail = "friend@mail.fr";
+
+        when(dbUserRepository.findByEmail(userEmail)).thenReturn(Optional.empty());
+
+        // When & Then
+        assertThrows(
+                UserNotFoundException.class,
+                () -> userService.addRelation(userEmail, friendEmail)
+        );
+    }
+
+    /**
+     * Testing method addRelation
+     * - Given unknown friend email
+     * - When addRelation
+     * - Then throw UserNotFoundException
+     */
+    @Test
+    public void givenUnknownFriendEmail_whenAddRelation_thenThrowUserNotFoundException() {
+        // Given
+        String userEmail = "user@mail.fr";
+        String friendEmail = "unknow@mail.fr";
+
+
+        when(dbUserRepository.findByEmail(userEmail)).thenReturn(Optional.of(new DBUser()));
+        when(dbUserRepository.findByEmail(friendEmail)).thenReturn(Optional.empty());
+
+        // When & Then
+        assertThrows(
+                UserNotFoundException.class,
+                () -> userService.addRelation(userEmail, friendEmail)
+        );
+    }
+
+
+    /**
+     * Testing method addRelation
+     * - Given user and friend already connected
+     * - When addRelation
+     * - Then throw UserRelationException
+     */
+    @Test
+    public void givenFriendAlreadyConnected_whenAddRelation_thenThrowUserRelationException() {
+        // Given
+        DBUser dbFriend = new DBUser();
+        dbFriend.setUserId(1);
+        dbFriend.setEmail("friend@mail.fr");
+
+        DBUser dbUser = new DBUser();
+        dbUser.setUserId(2);
+        dbUser.setEmail("user@mail.fr");
+        List<DBUser> connections = new ArrayList<>();
+        connections.add(dbFriend);
+        dbUser.setConnections(connections);
+
+
+        when(dbUserRepository.findByEmail(dbUser.getEmail())).thenReturn(Optional.of(dbUser));
+        when(dbUserRepository.findByEmail(dbFriend.getEmail())).thenReturn(Optional.of(dbFriend));
+
+        // When & Then
+        assertThrows(
+                UserRelationException.class,
+                () -> userService.addRelation(dbUser.getEmail(), dbFriend.getEmail())
+        );
+    }
+
+
+    /**
+     * Testing method getConnections
+     * - Given valid user email
+     * - When getConnections
+     * - Then return connections
+     */
+    @Test
+    public void givenValidUserEmail_whenGetConnections_thenReturnConnections() {
+        // Given
+        DBUser dbFriend = new DBUser();
+        dbFriend.setUserId(1);
+        dbFriend.setEmail("friend@mail.fr");
+
+        DBUser dbUser = new DBUser();
+        dbUser.setUserId(2);
+        dbUser.setEmail("user@mail.fr");
+        List<DBUser> connections = new ArrayList<>();
+        connections.add(dbFriend);
+        dbUser.setConnections(connections);
+
+
+        when(dbUserRepository.findByEmail(dbUser.getEmail())).thenReturn(Optional.of(dbUser));
+
+        // When
+        List<DBUser> actualConnections = userService.getConnections(dbUser.getEmail());
+
+        // Then
+        assertEquals(connections, actualConnections);
+    }
+
+
+    /**
+     * Testing method getConnections
+     * - Given unknown user email
+     * - When getConnections
+     * - Then throw UserNotFoundException
+     */
+    @Test
+    public void givenUnknowUserEmail_whenGetConnections_thenThrowUserNotFoundException() {
+        // Given
+        String userEmail = "unknow@mail.fr";
+
+        when(dbUserRepository.findByEmail(userEmail)).thenReturn(Optional.empty());
+
+        // When & Then
+        assertThrows(
+                UserNotFoundException.class,
+                () -> userService.getConnections(userEmail)
+        );
     }
 
 }
