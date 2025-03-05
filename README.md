@@ -16,7 +16,7 @@ What things you need to install the software and how to install them
 - Java 21
 - Maven 3.9.9
 - MySQL 8.x
-- Docker (for running tests)
+- Docker (only for running integration tests)
 
 ### Installing
 
@@ -34,15 +34,16 @@ https://maven.apache.org/install.html
 
 https://dev.mysql.com/downloads/
 
-4.Installer Docker:
+4.Installer Docker: (only for integration tests)
 https://www.docker.com/get-started/
 
 ### Database creation
 
-Create database schema in MySQL using the file "/src/main/ressources/script/db_schema.sql".
+Hibernate will automatically create the database schema if it does not exist.
+The schema is also available in the SQL file "/src/main/resources/script/db_schema.sql".
 
-For testing purposes you can import datas with file "/src/main/ressources/script/db_datas_for_test.sql".
-The default password for all users is : "Password@1".
+For testing purposes, you can import data using the file "/src/main/resources/script/db_data_for_test.sql".
+The default password for all users is: "Password@1".
 
 ### Database MPD
 
@@ -64,4 +65,4 @@ To run the tests from maven, go to the folder that contains the pom.xml file and
 For unit tests : `mvn test`  
 For unit and integration tests :  `mvn verify`      
 For generating reporting : `mvn clean site`  
-Surefire, JaCoCo, JavaDoc reporting are available in the project directory : /target/site/index.html
+Surefire, JaCoCo, JavaDoc reporting are available in the project directory : "/target/site/index.html"

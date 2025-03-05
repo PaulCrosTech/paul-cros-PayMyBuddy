@@ -73,7 +73,7 @@ public class ProfilControllerIT extends AbstractContainerDB {
                         .param("email", "validMail@mail.fr")
                         .param("password", "Password@1"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(view().name("redirect:/logout"))
+                .andExpect(view().name("redirect:/login"))
                 .andReturn();
 
         dbUserRepository.findByEmail("validMail@mail.fr")
