@@ -42,7 +42,7 @@ public class RegisterController {
      */
     @GetMapping
     public String register(Model model) {
-        log.info("====> GET /register page <====");
+        log.info("====> GET /register : page <====");
         model.addAttribute("highlightRegister", true);
         model.addAttribute("userDto", new UserDto());
         return "register";
@@ -57,12 +57,12 @@ public class RegisterController {
      */
     @PostMapping
     public String register(@Valid @ModelAttribute UserDto userDto, BindingResult bindingResult, Model model) {
-        log.info("====> POST /register for user {} <====", userDto.getUserName());
+        log.info("====> POST /register : page <====");
         model.addAttribute("highlightRegister", true);
 
         // Check form errors
         if (bindingResult.hasErrors()) {
-            log.debug("====> Error in registering user {} <====", userDto.getUserName());
+            log.info("====> POST /register : form contains error <====");
             return "register";
         }
 
@@ -70,7 +70,7 @@ public class RegisterController {
         try {
             userService.addUser(userDto);
         } catch (UserWithSameEmailExistsException | UserWithSameUserNameExistsException e) {
-            log.debug("====> Error in /register form : {} <====", e.getMessage());
+            log.debug("====> POST /register : exception while creating user  {} <====", e.getMessage());
 
             String field = e instanceof UserWithSameEmailExistsException ? "email" : "userName";
             String fieldValue = e instanceof UserWithSameEmailExistsException ? userDto.getEmail() : userDto.getUserName();
@@ -87,8 +87,7 @@ public class RegisterController {
             return "register";
         }
 
-        log.info("====> User {} is registered <====", userDto.getUserName());
-
+        log.info("====> POST /register : user is created <====");
         return "redirect:/login?registered";
     }
 }

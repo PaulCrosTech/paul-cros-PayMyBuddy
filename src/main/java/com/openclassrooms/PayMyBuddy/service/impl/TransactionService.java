@@ -50,6 +50,7 @@ public class TransactionService implements ITransactionService {
      */
     @Override
     public Page<TransactionWithDebitCreditDto> findAsSendOrReceiverByEmail(String email, Pageable pageable) throws UserNotFoundException {
+        log.debug("====> Find transactions of user '{}' as sender or receiver <====", email);
 
         DBUser user = userRepository.findByEmail(email)
                 .orElseThrow(
@@ -77,20 +78,25 @@ public class TransactionService implements ITransactionService {
     @Transactional
     public void save(String debtorEmail, TransactionDto transactionDto) throws UserNotFoundException, TransactionInsufficientBalanceException {
 
-        log.info("====> Save transaction <====");
+        log.debug("====> Creating new transaction <====");
         DBUser debtorUser = userRepository.findByEmail(debtorEmail)
                 .orElseThrow(
                         () -> new UserNotFoundException("Utilisateur non trouvé avec l'email : " + debtorEmail)
                 );
+        log.debug("====> Debtor '{}' found <====", debtorUser.getEmail());
 
         DBUser creditorUser = userRepository.findByUserId(transactionDto.getUserId())
                 .orElseThrow(
                         () -> new UserNotFoundException("Utilisateur créditeur non trouvé")
                 );
 
+        log.debug("====> Creditor '{}' found <====", creditorUser.getEmail());
+
         if (debtorUser.getSolde() < transactionDto.getAmount()) {
             throw new TransactionInsufficientBalanceException(debtorUser.getUserName(), debtorUser.getSolde(), transactionDto.getAmount());
         }
+
+        log.debug("====> The debtor has enough funds ({}) to complete the transaction ({}). <====", debtorUser.getSolde(), transactionDto.getAmount());
 
         debtorUser.setSolde(debtorUser.getSolde() - transactionDto.getAmount());
 
@@ -102,6 +108,7 @@ public class TransactionService implements ITransactionService {
         transaction.setSender(debtorUser);
         transaction.setReceiver(creditorUser);
         transactionRepository.save(transaction);
+        log.debug("====> Transaction created <====");
     }
 
 

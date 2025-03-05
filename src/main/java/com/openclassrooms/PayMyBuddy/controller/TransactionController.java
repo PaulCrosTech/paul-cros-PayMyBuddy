@@ -49,7 +49,7 @@ public class TransactionController {
             @RequestParam(required = false) Integer pageSize,
             @AuthenticationPrincipal User user) {
 
-        log.info("====> GET /transaction page <====");
+        log.info("====> GET /transaction  : page for user {} <====", user.getUsername());
         setupModel(model, new TransactionDto(), user, page, pageSize);
 
         return "transaction";
@@ -71,12 +71,11 @@ public class TransactionController {
             @RequestParam(required = false) Integer pageSize,
             @AuthenticationPrincipal User user) {
 
-        log.info("====> POST /transaction page <====");
+        log.info("====> POST /transaction : page for user {} <====", user.getUsername());
         setupModel(model, transactionDto, user, page, pageSize);
 
         if (bindingResult.hasErrors()) {
-            log.debug("====> Error in transaction form <====");
-            log.debug(bindingResult.getAllErrors().toString());
+            log.info("====> POST /transaction : form contains error <====");
             return "transaction";
         }
 
@@ -84,13 +83,15 @@ public class TransactionController {
             transactionService.save(user.getUsername(), transactionDto);
         } catch (TransactionInsufficientBalanceException e) {
 
-            log.error("====> Error in transaction form : {} <====", e.getMessage());
+            log.debug("====> POST /transaction : exception while creating transaction {} <====", e.getMessage());
+
             model.addAttribute("savingTransactionError", e.getMessage());
             setupModel(model, transactionDto, user, page, pageSize);
+
             return "transaction";
         }
 
-        log.info("====> transaction done <====");
+        log.info("====> POST /transaction : transaction created <====");
         return "redirect:/transaction?success";
     }
 

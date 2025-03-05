@@ -27,12 +27,9 @@ public class RelationController {
 
     @GetMapping
     public String relations(Model model) {
-        log.info("====> GET /relation page <====");
-
+        log.info("====> GET /relation : page <====");
         model.addAttribute("highlightRelations", true);
         model.addAttribute("relationDto", new RelationDto());
-
-
         return "relation";
     }
 
@@ -42,23 +39,23 @@ public class RelationController {
                             BindingResult bindingResult, Model model,
                             @AuthenticationPrincipal User user) {
 
-        log.info("====> POST /relation page {} <====", relationDto.getEmail());
+        log.info("====> POST /relation : page for user {} <====", user.getUsername());
         model.addAttribute("highlightRelations", true);
 
         if (bindingResult.hasErrors()) {
-            log.info("====> Email bad format <====");
+            log.info("====> POST /relation : form contains error <====");
             return "relation";
         }
 
         try {
             userService.addRelation(user.getUsername(), relationDto.getEmail());
         } catch (UserNotFoundException | UserRelationException e) {
-            log.debug("====> Error creating relation : {} <====", e.getMessage());
+            log.debug("====> POST /relation : exception while adding relation to user {} <====", e.getMessage());
             model.addAttribute("error", e.getMessage());
             return "relation";
         }
 
-        log.info("====> Relations added <====");
+        log.info("====> POST /relation : relation added to user <====");
         return "redirect:/relation?success";
     }
 }

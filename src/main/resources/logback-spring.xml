@@ -4,8 +4,10 @@
     <!--    Rappel ordre : Logger puis Appender-->
 
     <!-- Propriétés pour les patterns de log -->
-    <property name="CONSOLE_LOG_PATTERN" value="%d{HH:mm:ss.SSS} : [%thread] - %highlight([%-5level]) - %cyan(%logger{36}) - %msg%n"/>
-    <property name="FILE_LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} : [%thread] - [%-5level] - %logger{36} - %msg%n"/>
+    <property name="CONSOLE_LOG_PATTERN"
+              value="%d{HH:mm:ss.SSS} : [%thread] - %highlight([%-5level]) - %cyan(%logger{36}) - %cyan(%M) - %msg%n"/>
+    <property name="FILE_LOG_PATTERN"
+              value="%d{yyyy-MM-dd HH:mm:ss.SSS} : [%thread] - [%-5level] - %logger{36} - %cyan(%M) - %msg%n"/>
 
     <!-- Paramétrage Console-->
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
@@ -36,7 +38,7 @@
     </logger>
 
     <!-- Logger : Application -->
-    <logger name="com.openclassrooms.paymybuddy" level="DEBUG" additivity="false">
+    <logger name="com.openclassrooms.PayMyBuddy" level="DEBUG" additivity="false">
         <appender-ref ref="CONSOLE"/>
         <appender-ref ref="FILE"/>
     </logger>

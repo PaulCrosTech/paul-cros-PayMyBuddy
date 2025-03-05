@@ -51,6 +51,7 @@ public class DBUserService implements IDBUserService {
      */
     @Override
     public UserDto findByEmail(String email) throws UserNotFoundException {
+        log.debug("====> find user by email {} <====", email);
         DBUser dbUser = dbUserRepository.findByEmail(email)
                 .orElseThrow(() -> new UserNotFoundException("Utilisateur non trouvé avec l'email : " + email));
         return userMapper.toUserDto(dbUser);
@@ -66,6 +67,7 @@ public class DBUserService implements IDBUserService {
      */
     @Override
     public UserDto findByUserName(String userName) throws UserNotFoundException {
+        log.debug("====> find user by user name {} <====", userName);
         DBUser dbUser = dbUserRepository.findByUserName(userName)
                 .orElseThrow(() -> new UserNotFoundException("Utilisateur non trouvé avec le username : " + userName));
         return userMapper.toUserDto(dbUser);
@@ -81,6 +83,7 @@ public class DBUserService implements IDBUserService {
     @Transactional
     @Override
     public void addUser(UserDto userDto) throws UserWithSameEmailExistsException, UserWithSameUserNameExistsException {
+        log.debug("====> creating new user {} <====", userDto.getEmail());
 
         if (isUserExistWithSameEmail(userDto.getEmail())) {
             throw new UserWithSameEmailExistsException(userDto.getEmail());
@@ -93,6 +96,7 @@ public class DBUserService implements IDBUserService {
         DBUser dbUser = userMapper.toDBUser(userDto);
         dbUser.setPassword(bCryptPasswordEncoder.encode(userDto.getPassword()));
         dbUserRepository.save(dbUser);
+        log.debug("====> user created <====");
     }
 
 
@@ -108,12 +112,12 @@ public class DBUserService implements IDBUserService {
     @Transactional
     @Override
     public void updateUser(String userEmail, UserDto userDto) throws UserWithSameEmailExistsException, UserWithSameUserNameExistsException, UserNotFoundException {
+        log.debug("====> updating user {} <====", userEmail);
 
         DBUser currentDbUser = dbUserRepository.findByEmail(userEmail)
                 .orElseThrow(() -> new UserNotFoundException("Utilisateur non trouvé avec l'email : " + userEmail));
 
-        log.info("====> Update profil : Current user  is {} <====", currentDbUser.getUserName());
-        log.info("====> Update profil : New datas are {} <====", userDto.getUserName());
+        log.info("====> user {} found <====", currentDbUser.getUserName());
 
         if (!currentDbUser.getEmail().equals(userDto.getEmail()) && isUserExistWithSameEmail(userDto.getEmail())) {
             throw new UserWithSameEmailExistsException(userDto.getEmail());
@@ -127,6 +131,7 @@ public class DBUserService implements IDBUserService {
         currentDbUser.setEmail(userDto.getEmail());
         currentDbUser.setPassword(bCryptPasswordEncoder.encode(userDto.getPassword()));
         dbUserRepository.save(currentDbUser);
+        log.debug("====> user updated <====");
     }
 
 
@@ -141,21 +146,19 @@ public class DBUserService implements IDBUserService {
     @Transactional
     @Override
     public void addRelation(String userEmail, String friendEmail) throws UserNotFoundException, UserRelationException {
-
-        log.info("====> Adding relation between user '{}' and friend '{}' <====", userEmail, friendEmail);
+        log.debug("====> add new relation between user '{}' and friend '{}' <====", userEmail, friendEmail);
 
         if (userEmail.equals(friendEmail)) {
-            log.error("====> Error : User and friend email are the same, can't add self relation <====");
             throw new UserRelationException("Vous ne pouvez pas vous ajouter en ami.");
         }
 
         DBUser dbUser = dbUserRepository.findByEmail(userEmail)
                 .orElseThrow(() -> new UserNotFoundException("Utilisateur non trouvé avec l'email : " + userEmail));
-        log.debug("====> User found : {} <====", dbUser);
+        log.debug("====> User '{}' found <====", dbUser.getEmail());
 
         DBUser dbFriend = dbUserRepository.findByEmail(friendEmail)
                 .orElseThrow(() -> new UserNotFoundException("Utilisateur non trouvé avec l'email : " + friendEmail));
-        log.debug("====> Friend found : {} <====", dbFriend);
+        log.debug("====> Friend '{}' found <====", dbFriend.getEmail());
 
 
         List<DBUser> connections = dbUser.getConnections();
@@ -163,11 +166,11 @@ public class DBUserService implements IDBUserService {
                 .filter(c -> c.getUserId() == dbFriend.getUserId())
                 .findFirst()
                 .ifPresent(c -> {
-                    log.error("====> Error : User and friend are already connected <====");
                     throw new UserRelationException("Vous êtes déjà amis.");
                 });
 
         dbUser.getConnections().add(dbFriend);
+        log.debug("====> Relation added <====");
     }
 
     /**
@@ -180,6 +183,7 @@ public class DBUserService implements IDBUserService {
     @Override
     public List<DBUser> getConnections(String userEmail) throws UserNotFoundException {
 
+        log.debug("====> get connections by user email {} <====", userEmail);
         DBUser dbUser = dbUserRepository.findByEmail(userEmail)
                 .orElseThrow(() -> new UserNotFoundException("Utilisateur non trouvé avec l'email : " + userEmail));
 

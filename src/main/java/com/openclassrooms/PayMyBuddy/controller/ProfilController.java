@@ -40,7 +40,7 @@ public class ProfilController {
      */
     @GetMapping
     public String profil(Model model, @AuthenticationPrincipal User user) {
-        log.info("====> GET /profil page for user {} <====", user);
+        log.info("====> GET /profil  : page for user {} <====", user.getUsername());
         model.addAttribute("highlightProfil", true);
 
         UserDto userDto = userService.findByEmail(user.getUsername());
@@ -62,12 +62,12 @@ public class ProfilController {
                          BindingResult bindingResult,
                          Model model,
                          @AuthenticationPrincipal User user, HttpServletRequest httpServletRequest) throws ServletException {
-        log.info("====> POST /profil page <====");
+        log.info("====> POST /profil : page for user {} <====", user.getUsername());
         model.addAttribute("highlightProfil", true);
 
         // Check form errors
         if (bindingResult.hasErrors()) {
-            log.debug("====> Error on updating profil <====");
+            log.info("====> POST /profil : form contains error <====");
             return "profil";
         }
 
@@ -75,7 +75,7 @@ public class ProfilController {
         try {
             userService.updateUser(user.getUsername(), userDto);
         } catch (UserWithSameEmailExistsException | UserWithSameUserNameExistsException e) {
-            log.debug("====> Error in /profil form : {} <====", e.getMessage());
+            log.debug("====> POST /profil : exception while updating profil {} <====", e.getMessage());
 
             String field = e instanceof UserWithSameEmailExistsException ? "email" : "userName";
             String fieldValue = e instanceof UserWithSameEmailExistsException ? userDto.getEmail() : userDto.getUserName();
@@ -92,7 +92,7 @@ public class ProfilController {
             return "profil";
         }
 
-        log.info("====> Profil is updated and user logout <====");
+        log.info("====> POST /profil : profil updated and user logout <====");
         httpServletRequest.logout();
         return "redirect:/login";
 

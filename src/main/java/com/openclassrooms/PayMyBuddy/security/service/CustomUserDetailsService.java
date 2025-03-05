@@ -42,7 +42,6 @@ public class CustomUserDetailsService implements UserDetailsService {
         log.info("====> Authenticate user with email {} <====", email);
         Optional<DBUser> dbUser = dbUserRepository.findByEmail(email);
         if (dbUser.isEmpty()) {
-            log.debug("====> User with mail {} is not found <====", email);
             throw new UsernameNotFoundException("User with mail " + email + " is not found");
         }
         return new User(
