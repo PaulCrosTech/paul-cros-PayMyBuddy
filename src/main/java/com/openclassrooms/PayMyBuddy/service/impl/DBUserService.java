@@ -182,22 +182,25 @@ public class DBUserService implements IDBUserService {
     }
 
     /**
-     * Get all connections of a user
+     * Get a username list of connections
      *
      * @param userEmail the user email
-     * @return the list of connections
+     * @return a list of username
      * @throws UserNotFoundException the user not found exception
      */
     @Override
-    public List<DBUser> getConnections(String userEmail) throws UserNotFoundException {
+    public List<String> getConnectionsUserName(String userEmail) throws UserNotFoundException {
 
         log.debug("====> get connections by user email {} <====", userEmail);
         DBUser dbUser = dbUserRepository.findByEmail(userEmail)
                 .orElseThrow(() -> new UserNotFoundException("Utilisateur non trouvé avec l'email : " + userEmail));
 
-        // TODO : récupérer uniquement le username
-        return dbUser.getConnections();
+
+        return dbUser.getConnections().stream()
+                .map(DBUser::getUserName)
+                .toList();
     }
+
 
     /**
      * Check if a user exists with the same email

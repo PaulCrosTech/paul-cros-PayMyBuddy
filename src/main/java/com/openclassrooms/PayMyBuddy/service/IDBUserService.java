@@ -66,12 +66,13 @@ public interface IDBUserService {
 
 
     /**
-     * Get all connections of a user
+     * Get a username list of connections
      *
      * @param userEmail the user email
-     * @return the list of connections
+     * @return a list of username
      * @throws UserNotFoundException the user not found exception
      */
-    List<DBUser> getConnections(String userEmail) throws UserNotFoundException;
+    List<String> getConnectionsUserName(String userEmail) throws UserNotFoundException;
+
 
 }

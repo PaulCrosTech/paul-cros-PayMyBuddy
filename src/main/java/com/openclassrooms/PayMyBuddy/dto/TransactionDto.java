@@ -1,6 +1,7 @@
 package com.openclassrooms.PayMyBuddy.dto;
 
 import com.openclassrooms.PayMyBuddy.validators.annotations.ValidDescription;
+import com.openclassrooms.PayMyBuddy.validators.annotations.ValidUsername;
 import jakarta.validation.constraints.Positive;
 import lombok.Data;
 
@@ -11,8 +12,8 @@ import lombok.Data;
 @Data
 public class TransactionDto {
 
-    @Positive(message = "Veuillez sélectionner une relation.")
-    private int userId;
+    @ValidUsername(message = "Veuillez sélectionner une relation.")
+    private String userName = "";
 
     @ValidDescription
     private String description;

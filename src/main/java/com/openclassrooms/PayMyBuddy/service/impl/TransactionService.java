@@ -92,14 +92,12 @@ public class TransactionService implements ITransactionService {
                 );
         log.debug("====> Debtor '{}' found <====", debtorUser.getEmail());
 
-        DBUser creditorUser = userRepository.findByUserId(transactionDto.getUserId())
+        DBUser creditorUser = userRepository.findByUserName(transactionDto.getUserName())
                 .orElseThrow(
-                        () -> new UserNotFoundException("Utilisateur créditeur non trouvé")
+                        () -> new UserNotFoundException("Utilisateur créditeur '" + transactionDto.getUserName() + "' non trouvé")
                 );
-
         log.debug("====> Creditor '{}' found <====", creditorUser.getEmail());
-
-
+        
         if (debtorUser.getSolde() < transactionDto.getAmount()) {
             throw new TransactionInsufficientBalanceException(debtorUser.getUserName(), debtorUser.getSolde(), transactionDto.getAmount());
         }

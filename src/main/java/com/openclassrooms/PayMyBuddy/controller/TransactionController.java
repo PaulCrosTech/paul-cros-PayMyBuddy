@@ -126,8 +126,7 @@ public class TransactionController {
 
         model.addAttribute("transactionDto", transactionDto);
 
-        // TODO : récupérer uniquement le username
-        List<DBUser> connections = userService.getConnections(user.getUsername());
+        List<String> connections = userService.getConnectionsUserName(user.getUsername());
         model.addAttribute("connections", connections);
 
         Pageable pageable = Pageable.ofSize(pageSize).withPage(page - 1);

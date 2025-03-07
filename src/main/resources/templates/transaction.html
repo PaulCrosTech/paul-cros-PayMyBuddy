@@ -27,17 +27,17 @@
 
                 <div class="col">
                     <div class="form-group">
-                        <select class="form-select form-control" id="userId" th:field="*{userId}"
-                                th:classappend="${#fields.hasErrors('userId')} ? 'is-invalid' : ''"
-                                aria-describedby="userIdFeedback">
-                            <option value="0" disabled selected>Sélectionner une relation</option>
+                        <select class="form-select form-control" id="userName" th:field="*{userName}"
+                                th:classappend="${#fields.hasErrors('userName')} ? 'is-invalid' : ''"
+                                aria-describedby="userNameFeedback">
+                            <option value="" disabled selected>Sélectionner une relation</option>
                             <option th:each="connection : ${connections}"
-                                    th:value="${connection.userId}"
-                                    th:text="${connection.userName}"></option>
+                                    th:value="${connection}"
+                                    th:text="${connection}"></option>
                         </select>
-                        <div id="userIdFeedback"
-                             th:classappend="${#fields.hasErrors('userId')} ? 'invalid-feedback'"
-                             th:errors="*{userId}"></div>
+                        <div id="userNameFeedback"
+                             th:classappend="${#fields.hasErrors('userName')} ? 'invalid-feedback'"
+                             th:errors="*{userName}"></div>
                     </div>
                 </div>
 
