@@ -1,16 +1,11 @@
 package com.openclassrooms.PayMyBuddy.unit.controller;
 
 
-import com.openclassrooms.PayMyBuddy.controller.RelationController;
 import com.openclassrooms.PayMyBuddy.controller.TransactionController;
 import com.openclassrooms.PayMyBuddy.dto.TransactionDto;
-import com.openclassrooms.PayMyBuddy.dto.TransactionWithDebitCreditDto;
-import com.openclassrooms.PayMyBuddy.entity.DBUser;
 import com.openclassrooms.PayMyBuddy.exceptions.TransactionInsufficientBalanceException;
-import com.openclassrooms.PayMyBuddy.exceptions.UserRelationException;
 import com.openclassrooms.PayMyBuddy.service.IDBUserService;
 import com.openclassrooms.PayMyBuddy.service.ITransactionService;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,9 +16,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
@@ -51,7 +44,7 @@ public class TransactionControllerTest {
 
     @BeforeEach
     public void setUp() {
-        when(userService.getConnections(anyString())).thenReturn(Collections.emptyList());
+        when(userService.getConnectionsUserName(anyString())).thenReturn(Collections.emptyList());
         when(transactionService.findAsSendOrReceiverByEmail(anyString(), any(Pageable.class))).thenReturn(Page.empty());
     }
 
@@ -89,7 +82,7 @@ public class TransactionControllerTest {
 
         // When && Then
         mockMvc.perform(post("/transaction")
-                        .param("userId", "1")
+                        .param("userName", "userName")
                         .param("description", "description test")
                         .param("amount", "100")
                         .with(csrf().asHeader()))
@@ -111,13 +104,14 @@ public class TransactionControllerTest {
 
         // When && Then
         mockMvc.perform(post("/transaction")
-                        .param("userId", "1")
+                        .param("userName", "")
                         .param("description", "")
                         .param("amount", "100")
                         .with(csrf().asHeader()))
                 .andExpect(status().isOk())
                 .andExpect(view().name("transaction"))
-                .andExpect(model().attributeHasFieldErrorCode("transactionDto", "description", "ValidDescription"));
+                .andExpect(model().attributeHasFieldErrorCode("transactionDto", "description", "ValidDescription"))
+                .andExpect(model().attributeHasFieldErrorCode("transactionDto", "userName", "ValidUsername"));
 
     }
 
@@ -141,7 +135,7 @@ public class TransactionControllerTest {
 
         // When && Then
         mockMvc.perform(post("/transaction")
-                        .param("userId", "1")
+                        .param("userName", userName)
                         .param("description", "Valid description")
                         .param("amount", String.valueOf(amount))
                         .with(csrf().asHeader()))

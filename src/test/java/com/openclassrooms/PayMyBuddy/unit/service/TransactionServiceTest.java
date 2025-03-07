@@ -55,7 +55,7 @@ public class TransactionServiceTest {
     public void givenValidInformations_whenSave_thenTransactionIsSaved() {
         // Given
         TransactionDto transactionDto = new TransactionDto();
-        transactionDto.setUserId(2);
+        transactionDto.setUserName("creditorUserName");
         transactionDto.setDescription("description");
         transactionDto.setAmount(100.0);
 
@@ -65,12 +65,12 @@ public class TransactionServiceTest {
         debtor.setSolde(1000.0);
 
         DBUser creditor = new DBUser();
-        creditor.setUserId(2);
+        creditor.setUserName(transactionDto.getUserName());
         creditor.setEmail("creditor@mail.fr");
         creditor.setSolde(0.0);
 
         when(userRepository.findByEmail(debtor.getEmail())).thenReturn(Optional.of(debtor));
-        when(userRepository.findByUserId(transactionDto.getUserId())).thenReturn(Optional.of(creditor));
+        when(userRepository.findByUserName(transactionDto.getUserName())).thenReturn(Optional.of(creditor));
 
         // When
         transactionService.save(debtor.getEmail(), transactionDto);
@@ -113,7 +113,7 @@ public class TransactionServiceTest {
         String debtorEmail = "mail@mail.fr";
 
         when(userRepository.findByEmail(debtorEmail)).thenReturn(Optional.of(new DBUser()));
-        when(userRepository.findByUserId(anyInt())).thenReturn(Optional.empty());
+        when(userRepository.findByUserName(anyString())).thenReturn(Optional.empty());
 
         // When && Then
         assertThrows(
@@ -132,7 +132,7 @@ public class TransactionServiceTest {
     public void givenDebtorInsufficientBalance_whenSave_thenTransactionInsufficientBalanceException() {
         // Given
         TransactionDto transactionDto = new TransactionDto();
-        transactionDto.setUserId(2);
+        transactionDto.setUserName("creditorUserName");
         transactionDto.setDescription("description");
         transactionDto.setAmount(100.0);
 
@@ -143,12 +143,12 @@ public class TransactionServiceTest {
         debtor.setSolde(0.0);
 
         DBUser creditor = new DBUser();
-        creditor.setUserId(2);
+        creditor.setUserName(transactionDto.getUserName());
         creditor.setEmail("creditor@mail.fr");
         creditor.setSolde(0.0);
 
         when(userRepository.findByEmail(debtor.getEmail())).thenReturn(Optional.of(debtor));
-        when(userRepository.findByUserId(transactionDto.getUserId())).thenReturn(Optional.of(creditor));
+        when(userRepository.findByUserName(transactionDto.getUserName())).thenReturn(Optional.of(creditor));
 
         // When && Then
         assertThrows(

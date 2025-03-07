@@ -195,7 +195,6 @@ public class DBUserService implements IDBUserService {
         DBUser dbUser = dbUserRepository.findByEmail(userEmail)
                 .orElseThrow(() -> new UserNotFoundException("Utilisateur non trouvé avec l'email : " + userEmail));
 
-
         return dbUser.getConnections().stream()
                 .map(DBUser::getUserName)
                 .toList();

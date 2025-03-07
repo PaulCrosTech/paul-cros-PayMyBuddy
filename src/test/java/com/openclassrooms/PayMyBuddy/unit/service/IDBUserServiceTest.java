@@ -488,23 +488,23 @@ public class IDBUserServiceTest {
         // Given
         DBUser dbFriend = new DBUser();
         dbFriend.setUserId(1);
-        dbFriend.setEmail("friend@mail.fr");
+        dbFriend.setUserName("friend");
 
         DBUser dbUser = new DBUser();
         dbUser.setUserId(2);
         dbUser.setEmail("user@mail.fr");
+
         List<DBUser> connections = new ArrayList<>();
         connections.add(dbFriend);
         dbUser.setConnections(connections);
 
-
         when(dbUserRepository.findByEmail(dbUser.getEmail())).thenReturn(Optional.of(dbUser));
 
         // When
-        List<DBUser> actualConnections = userService.getConnections(dbUser.getEmail());
+        List<String> actualConnections = userService.getConnectionsUserName(dbUser.getEmail());
 
         // Then
-        assertEquals(connections, actualConnections);
+        assertEquals(List.of(dbFriend.getUserName()), actualConnections);
     }
 
 
@@ -524,7 +524,7 @@ public class IDBUserServiceTest {
         // When & Then
         assertThrows(
                 UserNotFoundException.class,
-                () -> userService.getConnections(userEmail)
+                () -> userService.getConnectionsUserName(userEmail)
         );
     }
 
