@@ -63,12 +63,12 @@ public class TransactionService implements ITransactionService {
                 .orElseThrow(
                         () -> new UserNotFoundException("Utilisateur non trouvé avec l'email : " + email)
                 );
-        Page<Transaction> transactions = transactionRepository.findBySender_UserIdOrReceiver_UserId_OrderByTransactionIdDesc(user.getUserId(), user.getUserId(), pageable);
+        int userId = user.getUserId();
+        Page<Transaction> transactions = transactionRepository.findBySender_UserIdOrReceiver_UserId_OrderByTransactionIdDesc(userId, userId, pageable);
 
         List<TransactionWithDebitCreditDto> dto = transactions.stream()
-                .map(transaction -> transactionMapper.toTransactionWithDebitCredit(user.getUserId(), transaction))
+                .map(transaction -> transactionMapper.toTransactionWithDebitCredit(userId, transaction))
                 .toList();
-
         return new PageImpl<>(dto, pageable, transactions.getTotalElements());
     }
 
@@ -98,6 +98,7 @@ public class TransactionService implements ITransactionService {
                 );
 
         log.debug("====> Creditor '{}' found <====", creditorUser.getEmail());
+
 
         if (debtorUser.getSolde() < transactionDto.getAmount()) {
             throw new TransactionInsufficientBalanceException(debtorUser.getUserName(), debtorUser.getSolde(), transactionDto.getAmount());

@@ -10,6 +10,7 @@ import com.openclassrooms.PayMyBuddy.dto.UserDto;
 import com.openclassrooms.PayMyBuddy.repository.DBUserRepository;
 import com.openclassrooms.PayMyBuddy.service.IDBUserService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,6 +28,9 @@ public class DBUserService implements IDBUserService {
     private final DBUserRepository dbUserRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final UserMapper userMapper;
+
+    @Value("${paymybuddy.balance.default}")
+    private double balanceDefault;
 
 
     /**
@@ -98,6 +102,7 @@ public class DBUserService implements IDBUserService {
 
         DBUser dbUser = userMapper.toDBUser(userDto);
         dbUser.setPassword(bCryptPasswordEncoder.encode(userDto.getPassword()));
+        dbUser.setSolde(balanceDefault);
         dbUserRepository.save(dbUser);
         log.debug("====> user created <====");
     }
@@ -190,6 +195,7 @@ public class DBUserService implements IDBUserService {
         DBUser dbUser = dbUserRepository.findByEmail(userEmail)
                 .orElseThrow(() -> new UserNotFoundException("Utilisateur non trouvé avec l'email : " + userEmail));
 
+        // TODO : récupérer uniquement le username
         return dbUser.getConnections();
     }
 

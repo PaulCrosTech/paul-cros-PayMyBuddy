@@ -34,14 +34,14 @@ https://www.docker.com/get-started/
 
 ### Configuration
 
-Copy and rename the "/src/main/ressources/script/.env.template" file into the projet directory as "/.env",  
-then update the file with your MySQL configuration.
+Copy and rename the "/src/main/ressources/script/.env.template" file into the projet directory as "/.env".  
+In the ".env" file you have to :
 
-## Database MPD
+- configure your MySQL connection
+- set the default balance for new users (default is 100)
+- set the default port for the application (default is 8080)
 
-![MDP Schema](/src/main/resources/documentation/MPD.png)
-
-## Database Scripts
+### Database Scripts
 
 Hibernate will automatically create the database schema if it does not exist.  
 The schema is also available in the SQL file "/src/main/resources/script/db_schema.sql".
@@ -49,17 +49,27 @@ The schema is also available in the SQL file "/src/main/resources/script/db_sche
 For testing purposes, you can import data using the file "/src/main/resources/script/db_data_for_test.sql".  
 The default password for all users is: "Password@1".
 
-## Testing
+### Run the application
 
-The app has unit tests and integration tests written.  
-For integration tests, the app uses Testcontainers to run the tests in a docker container :
-https://testcontainers.com/
+To run the application, you can :
+
+- use the command : `mvn spring-boot:run`
+- run the main class : `PayMyBuddyApplication.java`
+
+Then go to the URL http://localhost:8080/
+
+## Database MPD
+
+![MDP Schema](/src/main/resources/documentation/MPD.png)
+
+## Testing
 
 To run the tests from maven, go to the folder that contains the pom.xml file and execute the below command.
 
-For unit tests : `mvn test`  
-For unit and integration tests :  `mvn verify`  
-For generating reporting : `mvn clean site`
+For unit tests and reports : `mvn clean test site`
+
+For unit, integration tests and reports :  `mvn clean verify site`  
+Integration tests used TestContainer, so don't forget to start your docker first (https://testcontainers.com/).
 
 Surefire, JaCoCo, JavaDoc reporting are available in the project directory : "/target/site/index.html"
 

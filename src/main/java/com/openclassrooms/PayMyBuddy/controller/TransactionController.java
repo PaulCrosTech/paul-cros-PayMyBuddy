@@ -126,6 +126,7 @@ public class TransactionController {
 
         model.addAttribute("transactionDto", transactionDto);
 
+        // TODO : récupérer uniquement le username
         List<DBUser> connections = userService.getConnections(user.getUsername());
         model.addAttribute("connections", connections);
 
