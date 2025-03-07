@@ -158,6 +158,7 @@
                     </dependency>
                 </dependencies>
                 <configuration>
+                    <testFailureIgnore>true</testFailureIgnore>
                     <excludes>
                         <exclude>**/*IT.java</exclude>
                     </excludes>

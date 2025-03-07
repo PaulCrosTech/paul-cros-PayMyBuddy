@@ -18,6 +18,9 @@ public interface UserMapper {
      * @return the db user
      */
     @Mapping(target = "password", ignore = true)
+    @Mapping(target = "solde", ignore = true)
+    @Mapping(target = "connections", ignore = true)
+    @Mapping(target = "userId", ignore = true)
     DBUser toDBUser(UserDto userDto);
 
     /**
