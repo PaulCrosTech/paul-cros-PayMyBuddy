@@ -39,10 +39,12 @@ public class CustomUserDetailsService implements UserDetailsService {
      */
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        log.info("====> Authenticate user with email {} <====", email);
-        Optional<DBUser> dbUser = dbUserRepository.findByEmail(email);
+        String emailLowerCase = email.toLowerCase();
+        log.info("====> Authenticate user with email {} <====", emailLowerCase);
+
+        Optional<DBUser> dbUser = dbUserRepository.findByEmail(emailLowerCase);
         if (dbUser.isEmpty()) {
-            throw new UsernameNotFoundException("User with mail " + email + " is not found");
+            throw new UsernameNotFoundException("User with mail " + emailLowerCase + " is not found");
         }
         return new User(
                 dbUser.get().getEmail(),

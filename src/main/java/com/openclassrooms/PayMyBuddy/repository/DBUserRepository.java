@@ -29,12 +29,4 @@ public interface DBUserRepository extends JpaRepository<DBUser, Integer> {
      */
     Optional<DBUser> findByUserName(String userName);
 
-
-    /**
-     * Find User by user id
-     *
-     * @param userId the user id
-     * @return the user
-     */
-    Optional<DBUser> findByUserId(int userId);
 }

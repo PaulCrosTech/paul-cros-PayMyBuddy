@@ -92,6 +92,7 @@ public class DBUserService implements IDBUserService {
     public void addUser(UserDto userDto) throws UserWithSameEmailExistsException, UserWithSameUserNameExistsException {
         log.debug("====> creating new user {} <====", userDto.getEmail());
 
+        userDto.setEmail(userDto.getEmail().toLowerCase());
         if (isUserExistWithSameEmail(userDto.getEmail())) {
             throw new UserWithSameEmailExistsException(userDto.getEmail());
         }
@@ -122,21 +123,24 @@ public class DBUserService implements IDBUserService {
     public void updateUser(String userEmail, UserDto userDto) throws UserWithSameEmailExistsException, UserWithSameUserNameExistsException, UserNotFoundException {
         log.debug("====> updating user {} <====", userEmail);
 
+//        userDto.setEmail(userDto.getEmail().toLowerCase());
+
         DBUser currentDbUser = dbUserRepository.findByEmail(userEmail)
                 .orElseThrow(() -> new UserNotFoundException("Utilisateur non trouvé avec l'email : " + userEmail));
 
         log.info("====> user {} found <====", currentDbUser.getUserName());
 
-        if (!currentDbUser.getEmail().equals(userDto.getEmail()) && isUserExistWithSameEmail(userDto.getEmail())) {
+        if (!currentDbUser.getEmail().equalsIgnoreCase(userDto.getEmail()) && isUserExistWithSameEmail(userDto.getEmail())) {
             throw new UserWithSameEmailExistsException(userDto.getEmail());
         }
 
-        if (!currentDbUser.getUserName().equals(userDto.getUserName()) && isUserExistWithSameUserName(userDto.getUserName())) {
+        if (!currentDbUser.getUserName().equalsIgnoreCase(userDto.getUserName()) && isUserExistWithSameUserName(userDto.getUserName())) {
+            log.debug("====> {} {}  <====", currentDbUser.getUserName(), userDto.getUserName());
             throw new UserWithSameUserNameExistsException(userDto.getUserName());
         }
 
         currentDbUser.setUserName(userDto.getUserName());
-        currentDbUser.setEmail(userDto.getEmail());
+        currentDbUser.setEmail(userDto.getEmail().toLowerCase());
         currentDbUser.setPassword(bCryptPasswordEncoder.encode(userDto.getPassword()));
         dbUserRepository.save(currentDbUser);
         log.debug("====> user updated <====");
@@ -156,15 +160,18 @@ public class DBUserService implements IDBUserService {
     public void addRelation(String userEmail, String friendEmail) throws UserNotFoundException, UserRelationException {
         log.debug("====> add new relation between user '{}' and friend '{}' <====", userEmail, friendEmail);
 
-        if (userEmail.equals(friendEmail)) {
+        String emailLowerCase = userEmail.toLowerCase();
+        String friendEmailLowerCase = friendEmail.toLowerCase();
+
+        if (emailLowerCase.equals(friendEmailLowerCase)) {
             throw new UserRelationException("Vous ne pouvez pas vous ajouter en ami.");
         }
 
-        DBUser dbUser = dbUserRepository.findByEmail(userEmail)
+        DBUser dbUser = dbUserRepository.findByEmail(emailLowerCase)
                 .orElseThrow(() -> new UserNotFoundException("Utilisateur non trouvé avec l'email : " + userEmail));
         log.debug("====> User '{}' found <====", dbUser.getEmail());
 
-        DBUser dbFriend = dbUserRepository.findByEmail(friendEmail)
+        DBUser dbFriend = dbUserRepository.findByEmail(friendEmailLowerCase)
                 .orElseThrow(() -> new UserNotFoundException("Utilisateur non trouvé avec l'email : " + friendEmail));
         log.debug("====> Friend '{}' found <====", dbFriend.getEmail());
 

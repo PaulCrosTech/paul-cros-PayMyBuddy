@@ -155,6 +155,8 @@ public class IDBUserServiceTest {
 
         // Given
         UserDto userDto = new UserDto();
+        userDto.setEmail("email@mail.fr");
+
         DBUser dbUser = new DBUser();
 
         when(dbUserRepository.findByEmail(userDto.getEmail())).thenReturn(Optional.empty());
