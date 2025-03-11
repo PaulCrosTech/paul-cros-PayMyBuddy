@@ -4,7 +4,6 @@ import com.openclassrooms.PayMyBuddy.exceptions.UserNotFoundException;
 import com.openclassrooms.PayMyBuddy.exceptions.UserRelationException;
 import com.openclassrooms.PayMyBuddy.exceptions.UserWithSameEmailExistsException;
 import com.openclassrooms.PayMyBuddy.exceptions.UserWithSameUserNameExistsException;
-import com.openclassrooms.PayMyBuddy.entity.DBUser;
 import com.openclassrooms.PayMyBuddy.dto.UserDto;
 
 import java.util.List;
