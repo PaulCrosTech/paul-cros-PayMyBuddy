@@ -15,7 +15,7 @@ public class UserWithSameUserNameExistsException extends RuntimeException {
      * @param userName (String) : User name
      */
     public UserWithSameUserNameExistsException(String userName) {
-        super("A user with username '" + userName + "' already exists.");
+        super("L'utilisateur '" + userName + "' existe déjà.");
         log.error("====> <exception> UserWithSameUserNameExistsException : {} <====", userName);
     }
 }

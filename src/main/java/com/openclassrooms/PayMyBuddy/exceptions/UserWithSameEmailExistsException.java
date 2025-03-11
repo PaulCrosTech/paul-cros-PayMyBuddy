@@ -15,7 +15,7 @@ public class UserWithSameEmailExistsException extends RuntimeException {
      * @param email (String) : Email of the user
      */
     public UserWithSameEmailExistsException(String email) {
-        super("A user with email '" + email + "' already exists.");
+        super("Un utilisateur avec l'email '" + email + "' existe déjà.");
         log.error("====> <exception> UserWithSameEmailExistsException : {} <====", email);
     }
 }
